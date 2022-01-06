@@ -1,0 +1,212 @@
+html,
+body
+    height 100%
+
+body
+    background linear-gradient(to bottom, #131313 0%, #02101c 100%)
+    margin 0
+    font-family Helvetica, sans-serif
+    overflow hidden
+
+
+a
+    color #ffffff
+
+button
+    color rgba(127, 255, 255, 0.75)
+    background transparent
+    outline 1px solid rgba(127, 255, 255, 0.75)
+    border 0
+    padding 1.6vh 4vh
+    margin 0 4.6vh
+    font-size 2vh
+    font-weight bold
+    cursor pointer
+    &:hover
+        background-color rgba(0, 255, 255, 0.5)
+    &:active
+        color #000000
+        background-color rgba(0, 255, 255, 0.75)
+
+.canvas-box
+    position fixed
+    left 0
+    top 0
+    z-index -1
+
+.lottery
+    &-container
+        z-index 3
+        marign 0 15vh
+        position relative
+    &-music
+        position fixed
+        top 3vh
+        right 4vh
+        z-index 5
+        &__item
+            display block
+            opacity 0
+        &__box
+            width 5vh
+            height 5vh
+            border-radius 50%
+            text-align center
+            line-height 5vh
+            font-size 1.4vh
+            color #fff
+            cursor pointer
+            background-color rgba(253, 105, 0, 0.9)
+            border 1px solid rgba(255, 255, 255, .5)
+    &-prizeBar
+        position fixed
+        left 0
+        padding-left 1.2vh
+        top 1.2vh
+        z-index 2
+        &__title
+            color #fff
+            line-height 5vh
+            font-size 1.6vh
+            margin 2.4vh 0
+        &__label
+            font-size 5vh
+            font-weight bold
+            color #db5c58
+            vertical-align middle
+            padding 0 6px
+        &__list
+            margin 0
+            padding 0
+            list-style none
+        &__item
+            padding 9px
+            margin 6px 0
+            display flex
+            align-items center
+            justify-content center
+            border-radius 4px
+            flex-wrap nowrap
+            background-color rgba(0, 127, 127, 0.37)
+            border 1px solid rgba(127, 255, 255, 0.25)
+            color rgba(127, 255, 255, 0.75)
+            width 30vh
+            height 10vh
+            box-sizing border-box
+            transition transform 1s ease-in
+        &__img
+            width 8vh
+            height 8vh
+            margin-right 1.2vh
+            border-radius 50%
+            background-color #fff
+            text-shadow 0 0 1vh rgba(0, 255, 255, 0.95)
+            overflow hidden
+            img
+                width 90%
+                height 90%
+                position relative
+                top 50%
+                left 50%
+                transform translate(-50%, -50%)
+        &__text
+            flex 1
+            &-title
+                margin 4px 0
+                font-size 1.8vh
+        &__count
+            padding 4px 0
+            position relative
+            &-left
+                position absolute
+                color #fff
+                right 9px
+                font-size 1.8vh
+                line-height 1.6vh
+                top 50%
+                transform translateY(-50%)
+            .progress
+                height 1.8vh
+                background rgba(0, 0, 0, .5)
+                padding 1px
+                overflow visible
+                border-radius 1vh
+            .progress-bar
+                border-radius 1.8vh
+                position relative
+                animation animate-positive 2s
+                background-color #d9534f
+                height 1.8vh
+                -webkit-transition width .6s ease
+                -o-transition width .6s ease
+                transition width .6s ease
+                &.active
+                    animation reverse progress-bar-stripes 0.40s linear infinite, animate-positive 2s
+            .progress-bar-striped
+                background-image -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+                background-image -o-linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+                background-image linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent)
+                -webkit-background-size 8px 8px
+                background-size 8px 8px
+
+
+    &-menu
+        position absolute
+        bottom 2vh
+        width 100%
+        text-align center
+        z-index 4
+        margin-left 15vh
+    &-bubble__container
+        position fixed
+        right 0
+        top 10vh
+        bottom 1vh
+        width 24vh
+        z-index 2
+    &-none
+        display none
+
+
+@-webkit-keyframes animate-positive {
+    0% {
+        width 0
+    }
+}
+
+@keyframes animate-positive {
+    0% {
+        width 0
+    }
+}
+
+
+@-webkit-keyframes progress-bar-stripes {
+    from {
+        background-position 8px 0
+    }
+
+    to {
+        background-position 0 0
+    }
+}
+
+@-o-keyframes progress-bar-stripes {
+    from {
+        background-position 8px 0
+    }
+
+    to {
+        background-position 0 0
+    }
+}
+
+@keyframes progress-bar-stripes {
+    from {
+        background-position 8px 0
+    }
+
+    to {
+        background-position 0 0
+    }
+}
