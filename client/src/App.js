@@ -4,7 +4,7 @@ import music from '@/assets/music/music.mp3'
 import './App.styl';
 import { prizeList } from '@/constant'
 import * as Lottery from '@/api/lottery'
-import Stars from '@/libs/stars'
+import Stars from '@/libS/Stars'
 
 let stopAnimate = false
 function App() {
