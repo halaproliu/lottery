@@ -25,7 +25,6 @@ api.interceptors.request.use(
 // response interceptor
 api.interceptors.response.use(
   res => {
-    console.log(res.status)
     if (res.status === 200) {
       let { data = {} } = res
       if (data.code === 200) {

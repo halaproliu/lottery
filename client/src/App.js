@@ -1,17 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react'
-// import '@/libs/canvas'
 import music from '@/assets/music/music.mp3'
+import '@/assets/css/animate.min.css'
 import './App.styl';
-import { prizeList } from '@/constant'
 import * as Lottery from '@/api/lottery'
 import Stars from '@/libs/Star'
+import LotterCard from '@/libs/LotteryCard'
+import Prize from '@/components/Prize'
+import Bubble from '@/components/Bubble'
+import { ROW_COUNT, COLUMN_COUNT, HIGHLIGHT_CELL, COMPANY, EACH_COUNT } from '@/constant/prize'
+import { prizeList } from '@/constant'
 
 let stopAnimate = false
 function App() {
+  let len = prizeList.length - 1
   let [ rotated, setRotated ] = useState(0)
   let [ musicStyle, setMusicStyle ] = useState({})
+  let [ showLottey, setShowLottery ] = useState(false)
+  let [ message, setMessage ] = useState('')
+  let [ animateClass, setAnimateClass ] = useState('')
+  const [ selectedIndex, setSelectedIndex ] = useState(len)
+  const [ selected, setSelected ] = useState(prizeList[len])
+  const [ barWidth, setBarWidth ] = useState('100%')
   const audioRef = useRef(null)
   const canvasRef = useRef(null)
+  const containerRef = useRef(null)
+  let winners = []
+  let lotteryCard
   const animateFn = () => {
       window.requestAnimationFrame(() => {
       if (stopAnimate) return
@@ -37,73 +51,112 @@ function App() {
     }
   }
 
+  const getCurrentPrize = () => {
+    for (let i = len; i >= 0; i--) {
+      if (winners[i] && winners[i].length >= prizeList[i].count) {
+        continue
+      }
+      setSelectedIndex(i)
+      setSelected(prizeList[selectedIndex])
+      break
+    }
+  }
+
+  // 展示弹框提示
+  const showBubble = (msg) => {
+    setMessage(msg)
+    setAnimateClass('bounceInRight')
+    setTimeout(() => {
+      setAnimateClass('bounceOutRight')
+    }, 4000)
+  }
+  
+  const toShowLottery = () => {
+    setShowLottery(true)
+    if (lotteryCard) {
+      lotteryCard.removeHighlight()
+      lotteryCard.switchScreen('lottery')
+      showBubble(`马上抽取[${selected.title}],不要走开。`)
+    }
+  }
+
+  const goLottery = () => {
+    if (lotteryCard) {
+      lotteryCard.lottery()
+    }
+  }
+
+  const reLottery = () => {
+    if (lotteryCard) {
+      lotteryCard.reLottery()
+    }
+  }
+
+  const exportResult = () => {
+    if (lotteryCard) {
+      lotteryCard.exportResult()
+    }
+  }
+
+  const resetData = () => {
+    if (lotteryCard) {
+      lotteryCard.reset()
+    }
+  }
+
   const init = async () => {
-    const res = await Lottery.getUsers()
-    console.log(res)
+    const { winnerUsers, remainUsers } = await Lottery.getData()
+    const { users } = await Lottery.getUsers()
+    getCurrentPrize()
     let stars = new Stars(canvasRef.current)
     stars.init()
+    let basicData = {
+      users,
+      winnerUsers,
+      remainUsers,
+      selectedIndex,
+      selected
+    }
+    lotteryCard = new LotterCard({ ROW_COUNT, COLUMN_COUNT, HIGHLIGHT_CELL, COMPANY, EACH_COUNT }, basicData, containerRef, setBarWidth)
+    lotteryCard.init()
   }
 
   useEffect(() => {
-    audioRef.current.play()
+    // audioRef.current.play()
     init()
-  })
+    console.log(showLottey)
+  }, [showLottey])
   return (
     <>
-      <div className="lottery-container">
-        <div className="canvas-box">
-          <canvas id="canvas" ref={canvasRef}></canvas>
-        </div>
-        <div className="lottery-music">
-          <audio ref={audioRef} className="lottery-music__item" src={music}></audio>
-          <div className="lottery-music__box" style={musicStyle} onClick={onMusicPlay}>Music</div>
-        </div>
-        <div className="lottery-prizeBar">
-          <div className="lottery-prizeBar__title">
-            正在抽取
-            <label className="lottery-prizeBar__label">5等奖</label>
-            <label className="lottery-prizeBar__label">凌美钢笔</label>
-            ，剩余
-            <label className="lottery-prizeBar__label">35</label>个
-          </div>
-          <ul className="lottery-prizeBar__list">
-            {
-              prizeList.map((prize, index) => {
-                return (
-                  <li className="lottery-prizeBar__item" key={prize.type || index + Date.now()}>
-                    <div className="lottery-prizeBar__img">
-                      <img src={prize.img} alt={prize.title} />
-                    </div>
-                    <div className="lottery-prizeBar__text">
-                      <h5 className="lottery-prizeBar__text-title">{ prize.type }等奖 { prize.title }</h5>
-                      <div className="lottery-prizeBar__count">
-                        <div className="progress">
-                            <div className="progress-bar progress-bar-danger progress-bar-striped active" style={{width: '100%' }}></div>
-                        </div>
-                        <div className="lottery-prizeBar__count-left">
-                            {prize.count + '/' + prize.count}
-                        </div>
-                    </div>
-                    </div>
-                  </li>
-                )
-              })
-            }
-          </ul>
-        </div>
-        <div className="lottery-menu">
-          <button>进入抽奖</button>
-          <div className="lottery-none">
-            <button>抽奖</button>
-            <button>重新抽奖</button>
-            <button>导出抽奖结果</button>
-            <button>重置</button>
-          </div>
-        </div>
-        <div className="lottery-bubble__container">
-          <div className="lottery-bubble animated"></div>
-        </div>
+      <div className="canvas-box">
+        <canvas id="canvas" ref={canvasRef}></canvas>
       </div>
+      <div className="lottery-music">
+        <audio ref={audioRef} className="lottery-music__item" src={music}></audio>
+        <div className="lottery-music__box" style={musicStyle} onClick={onMusicPlay}>Music</div>
+      </div>
+
+      <Prize selected={selected} selectedIndex={selectedIndex} barWidth={barWidth}></Prize>
+      
+      <div ref={containerRef} className="lottery-container"></div>
+      <div className="lottery-menu">
+        {
+          !showLottey 
+            ? 
+            (<button onClick={toShowLottery}>进入抽奖</button>)
+            :
+            (
+              <div>
+                <button onClick={goLottery}>抽奖</button>
+                <button onClick={reLottery}>重新抽奖</button>
+                <button onClick={exportResult}>导出抽奖结果</button>
+                <button onClick={resetData}>重置</button>
+              </div>
+            )
+        }
+        
+      </div>
+      <Bubble message={message} animateClass={animateClass}></Bubble>
     </>
   );
 }

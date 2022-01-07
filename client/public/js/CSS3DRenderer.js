@@ -39,8 +39,6 @@ window.THREE.CSS3DSprite.prototype.constructor = window.THREE.CSS3DSprite;
 
 window.THREE.CSS3DRenderer = function () {
 
-	console.log( 'window.THREE.CSS3DRenderer', window.THREE.REVISION );
-
 	var _width, _height;
 	var _widthHalf, _heightHalf;
 

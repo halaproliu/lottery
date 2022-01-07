@@ -36,3 +36,41 @@ function stat(dir) {
     })
   })
 }
+
+export const readFile = (filename) => {
+  let data
+  try {
+    data = fs.readFileSync(filename, 'utf-8')
+  } catch (e) {
+    console.log('读取文件失败：', e)
+  }
+  return data
+}
+
+export const writeFile = (filename, data, options = {}) => {
+  try {
+    fs.writeFileSync(filename, data, options)
+  } catch (e) {
+    console.log('写入文件失败：', e)
+  }
+}
+
+export const existsSync = (filename) => {
+  let res
+  try {
+    res = fs.existsSync(filename)
+  } catch (e) {
+    console.log('文件不存在', e)
+  }
+  return res
+}
+
+export const mkdirSync = filename => {
+  let res
+  try {
+    res = fs.mkdirSync(filename)
+  } catch (e) {
+    console.log('创建文件失败', e)
+  }
+  return res
+}
