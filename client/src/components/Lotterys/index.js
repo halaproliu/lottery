@@ -7,7 +7,7 @@ import Star from '@/components/Star'
 import Main from '@/components/Main'
 import { prizeList } from '@/constant'
 import * as LotteryApi from '@/api/lottery'
-import Papa from 'papaparse'
+import config from '@/config'
 
 function Lottery () {
     let len = prizeList.length - 1
@@ -63,8 +63,15 @@ function Lottery () {
 
     const exportData = async () => {
     //    const { data = {} } = await LotteryApi.exportResultData()
-    //    Papa.unparse(data)
-        LotteryApi.exportFile()
+    //    Papa.unparse(data, {
+    //        download: true
+    //    })
+        let { url } = await LotteryApi.exportFile()
+        const el = document.createElement('a')
+        el.setAttribute('href', config.baseURL + url)
+        document.body.appendChild(el)
+        el.click()
+        el.remove()
     }
     useEffect(() => {
         initData()

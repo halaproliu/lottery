@@ -88,20 +88,10 @@ class Lottery {
       outData.push(item === defaultType ? ['特等奖'] : [`${item}等奖`]);
       outData = outData.concat(winners[item] || []);
     })
-    let filename = path.join(__dirname, '../', config.staticPath, `/抽奖结果_${Date.now()}.xlsx`)
-    console.log(filename)
-    writeXML(outData, filename).then(res => {
-      console.log(res)
-      ctx.body = genSuccessResponse({ msg: '导出数据成功', url: filename })
-      // ctx.attachment(filename)
-      // await send(ctx, filename)
-    }).catch(e => {
-      ctx.body = genSuccessResponse({
-        code: 0,
-        msg: '导出数据失败',
-        error: e
-      })
-    })
+    let filename = `/抽奖结果_${Date.now()}.xlsx`
+    let paths = path.join(__dirname, '../', config.staticPath, filename)
+    writeXML(outData, paths)
+    ctx.body = genSuccessResponse({ msg: '导出数据成功', url:  filename})
   }
 
   @Request({

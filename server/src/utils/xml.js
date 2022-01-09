@@ -1,6 +1,7 @@
 import xlsx from 'node-xlsx'
 import fs from 'fs'
 import path from 'path'
+import { writeFile } from './fileUtils'
 
 /**
  * @description 读取文件数据
@@ -24,18 +25,7 @@ export const writeXML = (data, name) => {
     name: '抽奖结果',
     data
   }])
-  console.log(111)
-  return new Promise((resolve, reject) => {
-    console.log(path.join(cwd, name))
-    fs.writeFile(path.join(cwd, name), buffer, (err) => {
-        console.log(err)
-        if (err) {
-            reject(err);
-            return
-        }
-        resolve()
-    })
-  });
+  writeFile(name, buffer)
 }
 
 export const saveDataFile = data => {
