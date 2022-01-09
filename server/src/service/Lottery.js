@@ -61,3 +61,10 @@ export const saveFileData = (data, type = 1) => {
   let msg = type === 1 ? '保存奖品数据成功' : '保存不在场中奖人员数据成功'
   console.log(msg)
 }
+
+export const resetData = (data) => {
+  data = JSON.stringify(data, '', 2)
+  writeFile(winnerPath, {})
+  writeFile(notArriveWinnerPath, [])
+  console.log('重置数据成功')
+}

@@ -3,24 +3,22 @@ import './index.styl'
 import { prizeList } from '@/constant'
 import classnames from 'classnames'
 
+const CountComp = (props) => {
+  const prize = props.prize
+  const currCount = props.currCount
+  if (props.selectedIndex === props.index) {
+    return <div className="lottery-prizeBar__count-left">{currCount + '/' + prize.count}</div>
+  } else if (props.selectedIndex < props.index) {
+    return <div className="lottery-prizeBar__count-left">{0 + '/' + prize.count}</div>
+  } else {
+    return <div className="lottery-prizeBar__count-left">{prize.count + '/' + prize.count}</div>
+  }
+}
 function Prize (props) {
-  // let len = prizeList.length - 1
-  // let winners = props.winners
-  // const [ selectedIndex, setSelectedIndex ] = useState(len)
-  // const [ selected, setSelected ] = useState(prizeList[len])
-  // useEffect(() => {
-  //   for (let i = len; i >= 0; i--) {
-  //     if (winners[i] && winners[i].length >= prizeList[i].count) {
-  //       continue
-  //     }
-  //     setSelectedIndex(i)
-  //     setSelected(prizeList[selectedIndex])
-  //     break
-  //   }
-  // }, [selectedIndex])
   let selected = props.selected
   let selectedIndex = props.selectedIndex
   let barWidth = props.barWidth
+  let currCount = props.currCount
   return (
     <div className="lottery-prizeBar">
       <div className="lottery-prizeBar__title">
@@ -42,11 +40,9 @@ function Prize (props) {
                   <h5 className="lottery-prizeBar__text-title">{ prize.type === 0 ? '特' : prize.type }等奖 { prize.title }</h5>
                   <div className="lottery-prizeBar__count">
                     <div className="progress">
-                        <div className="progress-bar progress-bar-danger progress-bar-striped active" style={{ width: selectedIndex === index ? barWidth : '100%' }}></div>
+                        <div className="progress-bar progress-bar-danger progress-bar-striped active" style={{ width: selectedIndex === index ? barWidth : selectedIndex < index ? 0 : '100%' }}></div>
                     </div>
-                    <div className="lottery-prizeBar__count-left">
-                        {prize.count + '/' + prize.count}
-                    </div>
+                    <CountComp selectedIndex={selectedIndex} index={index} prize={prize} currCount={currCount}></CountComp>
                 </div>
                 </div>
               </li>

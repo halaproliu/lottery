@@ -10,6 +10,7 @@ class Stars {
     this.wrap = 0
     this.animate = true
     this.stars = []
+    this.ctx = null
   }
 
   init () {

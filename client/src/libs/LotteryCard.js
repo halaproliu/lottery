@@ -1,12 +1,11 @@
-import * as Lottery from '@/api/lottery'
 class Card {
-  constructor ({ROW_COUNT, COLUMN_COUNT, HIGHLIGHT_CELL, COMPANY, EACH_COUNT}, basicData, element, setBarWidth) {
+  constructor (props, basicData, element, fns) {
     this.camera = null
-    this.rowCount = ROW_COUNT
-    this.colCount = COLUMN_COUNT
-    this.highlightCell = HIGHLIGHT_CELL // 默认高亮的人名
-    this.company = COMPANY
-    this.eachCount = EACH_COUNT
+    this.rowCount = props.ROW_COUNT
+    this.colCount = props.COLUMN_COUNT
+    this.highlightCell = props.HIGHLIGHT_CELL // 默认高亮的人名
+    this.company = props.COMPANY
+    this.eachCount = props.EACH_COUNT
     this.totalCards = this.rowCount * this.colCount
     this.rotateTime = 3000 // 旋转时间
     this.winnerUsers = basicData.winnerUsers // 已中奖用户
@@ -14,7 +13,8 @@ class Card {
     this.users = basicData.users // 全部用户
     this.container = element
     this.threeDCards = []
-    this.setBarWidth = setBarWidth
+    this.setBarWidth = fns.setBarWidth
+    this.showBubble = fns.showBubble
     this.targets = {
       table: [],
       sphere: []
@@ -155,7 +155,9 @@ class Card {
   }
 
   render () {
-    this.renderer.render(this.scene, this.camera)
+    if (this.renderer) {
+      this.renderer.render(this.scene, this.camera)
+    }
   }
 
   random(num) {
@@ -212,6 +214,7 @@ class Card {
 
   rotateBall () {
     return new Promise((resolve, reject) => {
+      console.log(333)
       this.scene.rotation.y = 0
       new TWEEN.Tween(this.scene.rotation).to({
         y: Math.PI * 8
@@ -225,11 +228,12 @@ class Card {
     })
   }
 
-  selecteCard (duration = 600) {
+  selectCard (duration = 600) {
     this.rotate = false
     let width = 140
     let tag = -(this.currentWinners.length - 1) / 2
     let txt = this.currentWinners.map(item => item[1])
+    this.showBubble(`恭喜${txt.join('、')}获得${this.selected.title}, 2019年必定旺旺旺。`)
     this.selectedCardIndex.forEach((cardIndex, index) => {
       this.changeCard(cardIndex, this.currentWinners[index])
       let object = this.threeDCards[cardIndex]
@@ -271,18 +275,34 @@ class Card {
 
   lottery () {
     this.setLotteryStatus(true)
+    console.log('lottery')
     // Lottery.saveData()
-    let prize = this.winnerUsers[this.selected.type] || []
-    let count = prize.length + this.eachCount[this.selectedIndex]
-    let percent = (count / prize.count) + '%'
-    this.setBarWidth(percent)
+    // this.changePrize()
+    // let prize = this.winnerUsers[this.selected.type] || []
+    // let count = prize.length + this.eachCount[this.selectedIndex]
+    // let percent = (count / prize.count) + '%'
+    // this.setBarWidth(percent)
     this.rotateBall().then(() => {
-      let totalCount = this.eachCount[this.selectedIndex]
-      let remainUsers = this.remainUsers.length
-      if (remainUsers === 0) {
-        this.remainUsers = this.users
-        remainUsers = this.remainUsers.length
-      }
+      // 每次抽奖人数
+      // let perCount = this.eachCount[this.selectedIndex]
+      // let remainUsers = this.remainUsers.length
+      // if (remainUsers === 0) {
+      //   this.showBubble('人员已抽完，现在重新设置所有人员可以进行二次抽奖！')
+      //   this.remainUsers = this.users
+      //   remainUsers = this.remainUsers.length
+      // }
+      // for (let i = 0; i < perCount; i++) {
+      //   let winnerId = this.random(remainUsers)
+      //   this.currentWinners.push(this.remainUsers.splice(winnerId, 1)[0])
+      //   remainUsers--
+      //   let cardIndex = this.random(this.totalCards)
+      //   while(this.selectedCardIndex.includes(cardIndex)) {
+      //     cardIndex = this.random(this.totalCards)
+      //   }
+      //   this.selectedCardIndex.push(cardIndex)
+      // }
+      // this.selectCard()
+      // this.showBubble(`正在抽取[${this.selected.title}],调整好姿势`)
     })
   }
 

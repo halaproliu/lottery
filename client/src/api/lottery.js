@@ -12,6 +12,18 @@ export const saveData = (data) => {
   return http.post('/api/saveData', data)
 }
 
-export const exportResultData = (data) => {
-  return http.get('/api/export')
+export const saveNotArriveWinnerData = (data) => {
+  return http.post('/api/saveNotArriveWinnerData', data)
+}
+
+export const resetData = () => {
+  return http.post('/api/resetData')
+}
+
+export const exportResultData = () => {
+  return http.get('/api/exportData')
+}
+
+export const exportFile = () => {
+  return http.get('/api/exportFile')
 }

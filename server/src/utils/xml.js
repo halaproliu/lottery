@@ -24,15 +24,17 @@ export const writeXML = (data, name) => {
     name: '抽奖结果',
     data
   }])
-
+  console.log(111)
   return new Promise((resolve, reject) => {
+    console.log(path.join(cwd, name))
     fs.writeFile(path.join(cwd, name), buffer, (err) => {
+        console.log(err)
         if (err) {
             reject(err);
-            return;
+            return
         }
-        resolve();
-    });
+        resolve()
+    })
   });
 }
 
