@@ -6,17 +6,18 @@ import MESSAGES from '@/constant/message'
 import { prizeList } from '@/constant'
 import '@/assets/css/animate.min.css'
 
+let isLottery = false
 function Main (props) {
     let container = useRef(null)
     let firstRender = useRef(true) // 记录第一次render
     let shineTimer = useRef(null)
+    let selectedCardIndex = useRef([])
     let [ showLottey, setShowLottery ] = useState(false)
     let [ message, setMessage ] = useState('')
     let [ animateClass, setAnimateClass ] = useState('')
-    let [ isLottery, setIsLottery ] = useState(false) // 是否正在抽奖
+    // let [ isLottery, setIsLottery ] = useState(false) // 是否正在抽奖
     // let selectedUsers = [] // 当前中奖人
     let [ selectedUsers, setSelectedUsers ] = useState([]) // 当前中奖人
-    let [ selectedCardIndex, setSelectedCardIndex ] = useState([])
     let [ table, setTable ] = useState([])
     let [ sphere, setSphere ] = useState([])
     let camera = useRef(null)
@@ -292,9 +293,8 @@ function Main (props) {
     const lottery = (isRelottery) => {
         rotateBall().then(() => {
             selectedUsers = []
-            selectedCardIndex = []
             setSelectedUsers([...selectedUsers]) // 选中人数置空
-            setSelectedCardIndex([...selectedCardIndex])
+            selectedCardIndex.current = []
             let currPrizeCount = EACH_COUNT[selectedIndex] // 每次抽奖个数
             let leftCount = remainUsers.length // 剩余抽奖个数
 
@@ -305,11 +305,10 @@ function Main (props) {
                 setSelectedUsers([...selectedUsers])
                 leftCount--
                 let cardIndex = random(TOTAL_CARDS)
-                while(selectedCardIndex.includes(cardIndex)) {
+                while(selectedCardIndex.current.includes(cardIndex)) {
                     cardIndex = random(TOTAL_CARDS)
                 }
-                selectedCardIndex.push(cardIndex)
-                setSelectedCardIndex(selectedCardIndex)
+                selectedCardIndex.current.push(cardIndex)
             }
             if (!isRelottery) {
                 setCurrWinnerUsers()
@@ -328,8 +327,7 @@ function Main (props) {
             prize: selected.title
         })
         
-        selectedCardIndex.forEach((cardIndex, index) => {
-            console.log(selectedUsers, index)
+        selectedCardIndex.current.forEach((cardIndex, index) => {
             changeCard(cardIndex, selectedUsers[index])
             let object = threeDCards.current[cardIndex]
             new TWEEN.Tween(object.position).to({
@@ -357,7 +355,8 @@ function Main (props) {
         .start()
         .onComplete(() => {
             // 动画结束后可以操作
-            setIsLottery(false)
+            // setIsLottery(false)
+            isLottery = false
         })
     }
 
@@ -384,7 +383,7 @@ function Main (props) {
             for (let i = 0; i < shineCards; i++) {
                 let index = random(maxUser)
                 let cardIndex = random(TOTAL_CARDS)
-                if (selectedCardIndex.includes(cardIndex)) {
+                if (selectedCardIndex.current.includes(cardIndex)) {
                     continue
                 }
                 shine(cardIndex)
@@ -398,7 +397,7 @@ function Main (props) {
         if (selectedUsers.length === 0) {
             return Promise.resolve()
         }
-        selectedCardIndex.forEach((index) => {
+        selectedCardIndex.current.forEach((index) => {
             let object = threeDCards.current[index]
             let target = sphere[index]
             new TWEEN.Tween(object.position).to({
@@ -422,7 +421,7 @@ function Main (props) {
                 .onUpdate(render)
                 .start()
                 .onComplete(() => {
-                    selectedCardIndex.forEach((index) => {
+                    selectedCardIndex.current.forEach((index) => {
                         let object = threeDCards.current[index]
                         object.element.classList.remove('prize')
                     })
@@ -433,13 +432,14 @@ function Main (props) {
 
     const goLottery = (e) => {
         e.stopPropagation()
-        setIsLottery(true)
-        saveData()
-        getCurrentPrize()
         if (isLottery) {
             showBubble('wait')
             return
         }
+        // setIsLottery(true)
+        isLottery = true
+        saveData()
+        getCurrentPrize()
         resetCard().then(_ => {
             lottery()
         })
@@ -447,20 +447,21 @@ function Main (props) {
     
     const reLottery = (e) => {
         e.stopPropagation()
+        if (isLottery) {
+            showBubble('wait')
+            return
+        }
         if (selectedUsers.length === 0) {
             showBubble('tip')
             return
         }
-        setIsLottery(true)
+        // setIsLottery(true)
+        isLottery = true
         saveNotArriveWinnerData({
             type: selected.type,
             data: selectedUsers
         })
         getCurrentPrize()
-        if (isLottery) {
-            showBubble('wait')
-            return
-        }
         showBubble('relottery', {
             prize: selected.title
         })

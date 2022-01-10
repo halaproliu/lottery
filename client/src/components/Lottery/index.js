@@ -26,9 +26,7 @@ function Lottery () {
         setRemainUsers(remainUsers)
     }
     const initCurrCount = (count) => {
-        console.log('count: ', count);
         let totalCount = selected.count
-        console.log('totalCount: ', totalCount);
         currCount = totalCount - count
         setCurrCount(currCount)
         let barWidth = `${((totalCount - count) / totalCount) * 100}%`
@@ -36,7 +34,6 @@ function Lottery () {
     }
     const getCurrentPrize = () => {
         for (let i = len; i >= 0; i--) {
-            console.log(i, winnerUsers[i] && winnerUsers[i].length >= prizeList[i].count)
             if (winnerUsers[i] && winnerUsers[i].length >= prizeList[i].count) {
                 continue
             }
@@ -44,8 +41,6 @@ function Lottery () {
             setSelectedIndex(selectedIndex)
             selected = prizeList[i]
             setSelected({...selected})
-            console.log('selectedIndex', selectedIndex)
-            console.log('selected', selected)
             break
         }
     }
@@ -75,7 +70,6 @@ function Lottery () {
     }, [])
 
     useEffect(() => {
-        console.log('getCurrentPrize')
         getCurrentPrize()
     }, [winnerUsers])
 
