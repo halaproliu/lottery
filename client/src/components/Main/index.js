@@ -504,6 +504,7 @@ function Main (props) {
         setSelectedUsers([])
         remainUsers = users
         reset() // 清空保存的json
+        setShowLottery(false)
         switchScreen('enter')
     }
 

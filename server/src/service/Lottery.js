@@ -2,8 +2,8 @@ import path from 'path'
 import { readFile, writeFile, existsSync } from '../utils/fileUtils'
 import { loadXML } from '../utils/xml'
 const cwd = process.cwd()
-const winnerPath = path.join(cwd, './data', 'winners.json')
-const notArriveWinnerPath = path.join(cwd, './data', 'notArriveWinner.json')
+const winnerPath = path.join(cwd, 'winners.json')
+const notArriveWinnerPath = path.join(cwd, 'notArriveWinner.json')
 
 export const getUserData = () => {
   let users = loadXML(path.join(cwd, 'data/users.xlsx'))
