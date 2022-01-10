@@ -383,7 +383,7 @@ function Main (props) {
             for (let i = 0; i < shineCards; i++) {
                 let index = random(maxUser)
                 let cardIndex = random(TOTAL_CARDS)
-                if (selectedCardIndex.current.includes(cardIndex)) {
+                if (selectedCardIndex.current.includes(cardIndex) || !remainUsers[index]) {
                     continue
                 }
                 shine(cardIndex)
