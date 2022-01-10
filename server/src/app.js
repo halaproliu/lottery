@@ -8,7 +8,7 @@ import convert from 'koa-convert'
 import config from './config'
 import router from './routers'
 import errorHanlder from './middlewares/error'
-import mongoose from 'mongoose'
+// import mongoose from 'mongoose'
 import log from './utils/log'
 import {
     getIPAddress
@@ -17,12 +17,12 @@ import {
 const app = new Koa()
 const port = config.port || '3000' // 端口号
 
-if (config.useMongo) {
-    mongoose.set('useFindAndModify', false)
-    mongoose.set('useCreateIndex', true)
-    mongoose.set('useNewUrlParser', true)
-    mongoose.connect(config.db.url) // 连接mongo
-}
+// if (config.useMongo) {
+//     mongoose.set('useFindAndModify', false)
+//     mongoose.set('useCreateIndex', true)
+//     mongoose.set('useNewUrlParser', true)
+//     mongoose.connect(config.db.url) // 连接mongo
+// }
 
 const middlewares = [
     convert(cors()),
