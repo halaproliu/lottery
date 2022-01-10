@@ -11,13 +11,13 @@ import config from '@/config'
 
 function Lottery () {
     let len = prizeList.length - 1
-    const [ selectedIndex, setSelectedIndex ] = useState(len)
-    const [ selected, setSelected ] = useState(prizeList[len])
-    const [ barWidth, setBarWidth ] = useState('100%')
-    const [ users, setUsers ] = useState([])
-    const [ winnerUsers, setWinnerUsers ] = useState([])
-    const [ remainUsers, setRemainUsers ] = useState([])
-    const [ currCount, setCurrCount ] = useState(selected.count)
+    let [ selectedIndex, setSelectedIndex ] = useState(len)
+    let [ selected, setSelected ] = useState(prizeList[len])
+    let [ barWidth, setBarWidth ] = useState('100%')
+    let [ users, setUsers ] = useState([])
+    let [ winnerUsers, setWinnerUsers ] = useState([])
+    let [ remainUsers, setRemainUsers ] = useState([])
+    let [ currCount, setCurrCount ] = useState(selected.count)
     const initData = async () => {
         const { winnerUsers, remainUsers } = await LotteryApi.getData()
         const { users } = await LotteryApi.getUsers()
@@ -26,20 +26,26 @@ function Lottery () {
         setRemainUsers(remainUsers)
     }
     const initCurrCount = (count) => {
+        console.log('count: ', count);
         let totalCount = selected.count
-        setCurrCount(totalCount - count)
+        console.log('totalCount: ', totalCount);
+        currCount = totalCount - count
+        setCurrCount(currCount)
         let barWidth = `${((totalCount - count) / totalCount) * 100}%`
         setBarWidth(barWidth)
     }
     const getCurrentPrize = () => {
         for (let i = len; i >= 0; i--) {
+            console.log(i, winnerUsers[i] && winnerUsers[i].length >= prizeList[i].count)
             if (winnerUsers[i] && winnerUsers[i].length >= prizeList[i].count) {
                 continue
             }
-            setSelectedIndex(i)
-            setSelected(() => {
-                return {...prizeList[i]}
-            })
+            selectedIndex = i
+            setSelectedIndex(selectedIndex)
+            selected = prizeList[i]
+            setSelected({...selected})
+            console.log('selectedIndex', selectedIndex)
+            console.log('selected', selected)
             break
         }
     }
@@ -69,15 +75,16 @@ function Lottery () {
     }, [])
 
     useEffect(() => {
+        console.log('getCurrentPrize')
         getCurrentPrize()
     }, [winnerUsers])
 
     useEffect(() => {
-        if (selectedIndex && winnerUsers[selectedIndex]) {
-            let count = winnerUsers[selectedIndex].length
+        if (selected) {
+            let count = (winnerUsers[selected.type] || []).length
             initCurrCount(count)
         }
-    }, [selectedIndex])
+    }, [selected])
     return (
         <>
             <Star></Star>
@@ -90,7 +97,7 @@ function Lottery () {
                 barWidth={barWidth}>
             </Prize>
             {
-                (users.length > 0 && remainUsers.length && selectedIndex && selected) && 
+                (users.length > 0 && remainUsers.length > 0 && selectedIndex !== undefined && selected) && 
                 (
                     <Main
                         users={users}
@@ -102,6 +109,7 @@ function Lottery () {
                         setSelected={setSelected}
                         initCurrCount={initCurrCount}
                         setWinnerUsers={setWinnerUsers}
+                        getCurrentPrize={getCurrentPrize}
                         resetData={resetData}
                         setData={setData}
                         saveNotArriveWinnerData={saveNotArriveWinnerData}

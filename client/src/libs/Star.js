@@ -1,5 +1,5 @@
 /**
- * @description 背景星星生成
+ * @description 背景星星生成(canvas必须设置宽高，否则不会立即展示)
  * @param el canvas dom节点
  */
 class Stars {

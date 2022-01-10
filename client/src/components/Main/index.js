@@ -9,6 +9,7 @@ import '@/assets/css/animate.min.css'
 function Main (props) {
     let container = useRef(null)
     let firstRender = useRef(true) // 记录第一次render
+    let shineTimer = useRef(null)
     let [ showLottey, setShowLottery ] = useState(false)
     let [ message, setMessage ] = useState('')
     let [ animateClass, setAnimateClass ] = useState('')
@@ -36,6 +37,7 @@ function Main (props) {
     let setSelected = props.setSelected
     let initCurrCount = props.initCurrCount
     let exportData = props.exportData
+    let getCurrentPrize = props.getCurrentPrize
     let isHighlight
     let resolution = 1 // 分辨率
     let rotateTime = 3000 // 旋转时间
@@ -138,8 +140,7 @@ function Main (props) {
             switchScreen('lottery')
         }
         animate()
-        // 窗口改变时，改变全景图大小
-        window.addEventListener('resize', onWindowResize, false)
+        shineCard()
     }
     const switchScreen = (type) => {
         if (type === 'enter') {
@@ -288,7 +289,7 @@ function Main (props) {
         })
         switchScreen('lottery')
     }
-    const lottery = () => {
+    const lottery = (isRelottery) => {
         rotateBall().then(() => {
             selectedUsers = []
             selectedCardIndex = []
@@ -310,8 +311,10 @@ function Main (props) {
                 selectedCardIndex.push(cardIndex)
                 setSelectedCardIndex(selectedCardIndex)
             }
-            setCurrWinnerUsers()
-            setPrizeData()
+            if (!isRelottery) {
+                setCurrWinnerUsers()
+                setPrizeData()
+            }
             selectCard()
         })
     }
@@ -326,6 +329,7 @@ function Main (props) {
         })
         
         selectedCardIndex.forEach((cardIndex, index) => {
+            console.log(selectedUsers, index)
             changeCard(cardIndex, selectedUsers[index])
             let object = threeDCards.current[cardIndex]
             new TWEEN.Tween(object.position).to({
@@ -360,6 +364,33 @@ function Main (props) {
     const changeCard = (cardIndex, user) => {
         let card = threeDCards.current[cardIndex].element
         card.innerHTML = `<div class="company">${COMPANY}</div><div class="name">${user[1]}</div><div class="details">${user[0]}<br/>${user[2] || 'PSST'}</div>`
+    }
+
+    // 切换名牌背景
+    const shine = (cardIndex, color) => {
+        let card = threeDCards.current[cardIndex].element
+        card.style.backgroundColor = color || 'rgba(0,127,127,' + (Math.random() * 0.7 + 0.25) + ')'
+    }
+
+    // 随机切换背景和人员信息
+    const shineCard = () => {
+        let maxCard = 15
+        let maxUser = remainUsers.length
+        let shineCards = random(maxCard)
+        shineTimer.current = setInterval(() => {
+            if (isLottery) {
+                return
+            }
+            for (let i = 0; i < shineCards; i++) {
+                let index = random(maxUser)
+                let cardIndex = random(TOTAL_CARDS)
+                if (selectedCardIndex.includes(cardIndex)) {
+                    continue
+                }
+                shine(cardIndex)
+                changeCard(cardIndex, remainUsers[index] || [])
+            }
+        }, 500)
     }
 
     // 重置抽奖牌所有内容
@@ -404,6 +435,7 @@ function Main (props) {
         e.stopPropagation()
         setIsLottery(true)
         saveData()
+        getCurrentPrize()
         if (isLottery) {
             showBubble('wait')
             return
@@ -422,17 +454,18 @@ function Main (props) {
         setIsLottery(true)
         saveNotArriveWinnerData({
             type: selected.type,
-            user: selectedUsers
+            data: selectedUsers
         })
-        showBubble('relottery', {
-            prize: selected.title
-        })
+        getCurrentPrize()
         if (isLottery) {
             showBubble('wait')
             return
         }
+        showBubble('relottery', {
+            prize: selected.title
+        })
         resetCard().then(_ => {
-            lottery()
+            lottery(true)
         })
     }
 
@@ -492,8 +525,11 @@ function Main (props) {
             firstRender.current = false
         }
         initThree()
+        // 窗口改变时，改变全景图大小
+        window.addEventListener('resize', onWindowResize, false)
         return () => {
             window.removeEventListener('resize', onWindowResize, false)
+            clearInterval(shineTimer.current)
         }
     }, [])
 

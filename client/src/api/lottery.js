@@ -17,7 +17,7 @@ export const saveNotArriveWinnerData = (data) => {
 }
 
 export const resetData = () => {
-  return http.post('/api/resetData')
+  return http.post('/api/reset')
 }
 
 export const exportResultData = () => {

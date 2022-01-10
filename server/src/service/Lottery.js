@@ -2,8 +2,8 @@ import path from 'path'
 import { readFile, writeFile, existsSync } from '../utils/fileUtils'
 import { loadXML } from '../utils/xml'
 const cwd = process.cwd()
-const winnerPath = path.join(cwd, 'winners.json')
-const notArriveWinnerPath = path.join(cwd, 'notArriveWinner.json')
+const winnerPath = path.join(cwd, './data', 'winners.json')
+const notArriveWinnerPath = path.join(cwd, './data', 'notArriveWinner.json')
 
 export const getUserData = () => {
   let users = loadXML(path.join(cwd, 'data/users.xlsx'))
@@ -43,9 +43,12 @@ export const getRemainData = () => {
       lotteredUser[item[0]] = true
     })
   }
-  notArriveWinners.forEach(item => {
-    lotteredUser[item[0]] = true
-  })
+  for (let key in notArriveWinners) {
+    let notArriveTmpData = notArriveWinners[key]
+    notArriveTmpData.forEach(item => {
+      lotteredUser[item[0]] = true
+    })
+  }
 
   let remainUsers = Object.assign([], userData)
   remainUsers = remainUsers.filter(user => {
@@ -62,9 +65,8 @@ export const saveFileData = (data, type = 1) => {
   console.log(msg)
 }
 
-export const resetData = (data) => {
-  data = JSON.stringify(data, '', 2)
-  writeFile(winnerPath, {})
-  writeFile(notArriveWinnerPath, [])
+export const resetData = () => {
+  writeFile(winnerPath, JSON.stringify({}))
+  writeFile(notArriveWinnerPath, JSON.stringify({}))
   console.log('重置数据成功')
 }
