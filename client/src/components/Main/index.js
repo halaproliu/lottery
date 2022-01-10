@@ -240,15 +240,27 @@ function Main (props) {
         })
     }
 
-    const saveData = () => {
-        if (!selected) return
+    // 设置当前获奖人员（未保存后端）
+    const setCurrWinnerUsers = () => {
         let type = selected.type // 当前奖品type
         let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
         savedWinners.push.apply(savedWinners, selectedUsers)
         winnerUsers[type] = savedWinners
         setWinnerUsers(winnerUsers)
+    }
+
+    // 设置奖品剩余个数和进度条
+    const setPrizeData = () => {
+        let type = selected.type // 当前奖品type
+        let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
         // 设置奖品剩余数量和进度条比例
         initCurrCount(savedWinners.length)
+    }
+
+    const saveData = () => {
+        if (!selected) return
+        let type = selected.type // 当前奖品type
+        let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
 
         if (selected.count <= savedWinners.length) {
             setSelectedIndex(selectedIndex--)
@@ -298,6 +310,8 @@ function Main (props) {
                 selectedCardIndex.push(cardIndex)
                 setSelectedCardIndex(selectedCardIndex)
             }
+            setCurrWinnerUsers()
+            setPrizeData()
             selectCard()
         })
     }
@@ -453,7 +467,6 @@ function Main (props) {
         addHighlight()
         resetCard()
         // 重置所有数据
-        // selectedUsers = []
         setSelectedUsers([])
         remainUsers = users
         reset() // 清空保存的json

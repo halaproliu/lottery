@@ -11,6 +11,7 @@ class Stars {
     this.animate = true
     this.stars = []
     this.ctx = null
+    this.animateId = null
   }
 
   init () {
@@ -39,7 +40,7 @@ class Stars {
   }
 
   drawStars () {
-    if (this.element.width !== window.innerWidth || this.element.width !== window.innerWidth) {
+    if (this.element.width !== window.innerWidth || this.element.height !== window.innerHeight) {
       this.element.width = window.innerWidth
       this.element.height = window.innerHeight
       this.init()
@@ -66,12 +67,16 @@ class Stars {
 
   execute () {
     if (this.animate) {
-      window.requestAnimationFrame(() => {
+      this.animateId = window.requestAnimationFrame(() => {
         this.execute()
       })
       this.moveStars()
       this.drawStars()
     }
+  }
+
+  stopAnimate () {
+    window.cancelAnimationFrame(this.animateId)
   }
 }
 

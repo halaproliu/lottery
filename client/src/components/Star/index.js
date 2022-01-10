@@ -4,21 +4,23 @@ import Stars from '@/libs/Star'
 import './index.styl'
 
 function Star () {
+    let stars = useRef(null)
     const init = () => {
-        let stars = new Stars(canvasRef.current)
-        stars.init()
+        stars.current = new Stars(canvasRef.current)
+        stars.current.init()
     }
     useEffect(() => {
         init()
         window.addEventListener('resize', init, false)
         return () => {
             window.removeEventListener('resize', init, false)
+            stars.current.stopAnimate()
         }
     }, [])
     const canvasRef = useRef(null)
     return (
         <div className="canvas-box">
-            <canvas id="canvas" ref={canvasRef}></canvas>
+            <canvas id="canvas" width={window.innerWidth} height={window.innerHeight} ref={canvasRef}></canvas>
         </div>
     )
 }

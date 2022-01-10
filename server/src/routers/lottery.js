@@ -88,7 +88,8 @@ class Lottery {
       outData.push(item === defaultType ? ['特等奖'] : [`${item}等奖`]);
       outData = outData.concat(winners[item] || []);
     })
-    let filename = `/抽奖结果_${Date.now()}.xlsx`
+    // let filename = `/抽奖结果_${Date.now()}.xlsx`
+    let filename = '/抽奖结果.xlsx'
     let paths = path.join(__dirname, '../', config.staticPath, filename)
     writeXML(outData, paths)
     ctx.body = genSuccessResponse({ msg: '导出数据成功', url:  filename})

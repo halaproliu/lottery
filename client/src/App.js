@@ -1,5 +1,5 @@
 import React from 'react'
-import Lottery from '@/components/Lotterys'
+import Lottery from '@/components/Lottery'
 function App() {
   return (
     <Lottery></Lottery>

@@ -2,20 +2,21 @@ import React, { useState, useRef, useEffect } from 'react'
 import music from '@/assets/music/music.mp3'
 import './index.styl'
 
+let stopAnimate = false
 function Music () {
-    let stopAnimate = false
     let [ musicStyle, setMusicStyle ] = useState({})
     let [ rotated, setRotated ] = useState(0)
     const audioRef = useRef(null)
     const animateFn = () => {
         window.requestAnimationFrame(() => {
-        if (stopAnimate) return
-        setMusicStyle({
-          transform: `rotate(${rotated % 360}deg)`
+            console.log(stopAnimate)
+            if (stopAnimate) return
+            setMusicStyle({
+                transform: `rotate(${rotated % 360}deg)`
+            })
+            setRotated(++rotated)
+            animateFn()
         })
-        setRotated(++rotated)
-        animateFn()
-      })
     }
     const onMusicPlay = () => {
         let audio = audioRef.current
