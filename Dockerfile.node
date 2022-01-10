@@ -1,0 +1,11 @@
+FROM node:15.14-alpine
+LABEL maintainer "luffybryant@gmail.com"
+ARG dir=/home/koa/lottery
+ARG registry=https://registry.npm.taobao.org
+RUN mkdir -p ${dir}
+WORKDIR ${dir}
+COPY . ${dir}
+RUN yarn --ignore-scripts
+RUN yarn global add pm2
+EXPOSE 3001
+CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]

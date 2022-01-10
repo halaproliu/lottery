@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.git
+Dockerfile*
+.gitignore
+.vscode
+web.conf
+nginx.conf
+package-lock.json
+yarn.lock

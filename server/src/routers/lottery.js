@@ -3,7 +3,6 @@ import { Controller, Request, RequestMethod } from '../utils/decorator'
 import { genSuccessResponse } from '../utils/modelUtils'
 import { writeXML } from '../utils/xml'
 import config from '../config'
-import send from 'koa-send'
 import { getUserData, getWinnerData, getNotArriveWinnersData, getRemainData, resetData, saveFileData } from '../service/Lottery'
 
 @Controller({
