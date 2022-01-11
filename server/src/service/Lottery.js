@@ -6,7 +6,7 @@ const winnerPath = path.join(cwd, 'winners.json')
 const notArriveWinnerPath = path.join(cwd, 'notArriveWinner.json')
 
 export const getUserData = () => {
-  let users = loadXML(path.join(cwd, 'data/users.xlsx'))
+  let users = loadXML(path.join(cwd, 'data/user1.xlsx'))
   return users
 }
 
@@ -59,9 +59,19 @@ export const getRemainData = () => {
 
 export const saveFileData = (data, type = 1) => {
   data = JSON.stringify(data, '', 2)
-  let currPath = type === 1 ? winnerPath : notArriveWinnerPath
+  let paths = {
+    1: winnerPath,
+    2: notArriveWinnerPath,
+    3: winnerPath
+  }
+  let currPath = paths[type]
   writeFile(currPath, data)
-  let msg = type === 1 ? '保存奖品数据成功' : '保存不在场中奖人员数据成功'
+  let types = {
+    1: '保存奖品数据成功',
+    2: '保存不在场中奖人员数据成功',
+    3: '移除不在场中奖人员数据成功'
+  }
+  let msg = types[type]
   console.log(msg)
 }
 

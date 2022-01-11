@@ -27,3 +27,7 @@ export const exportResultData = () => {
 export const exportFile = () => {
   return http.get('/api/exportFile')
 }
+
+export const removeNotArrivedUser = (data) => {
+  return http.post('/api/removeNotArrivedUser', data)
+}

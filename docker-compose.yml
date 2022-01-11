@@ -1,0 +1,27 @@
+version: "3.7"
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: . #. 指定镜像通过 ./Dockerfile 生成
+    ports:
+      - "80:80"
+    volumns:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/cert:/etc/nginx/cert
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - lottery
+    restart:
+      - always # 服务挂了的时候始终自动重启
+  server:
+    build:
+      context: ./server
+    ports:
+      - "3001:3001"
+    networks:
+      - lottery
+
+networks:
+  lottery:           # 网络名字
+    driver: bridge   # 由网关驱动

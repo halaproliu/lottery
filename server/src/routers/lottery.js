@@ -4,7 +4,7 @@ import { genSuccessResponse } from '../utils/modelUtils'
 import { writeXML } from '../utils/xml'
 import config from '../config'
 import { getUserData, getWinnerData, getNotArriveWinnersData, getRemainData, resetData, saveFileData } from '../service/Lottery'
-
+import { prizeList } from '../config/prize'
 @Controller({
   prefix: '/api'
 })
@@ -40,12 +40,14 @@ class Lottery {
   saveData (ctx) {
     let params = ctx.request.body
     let type = params.type
+    let subType = params.subType
     let data = params.data
+    let index = `${type}-${subType}`
     let winners = getWinnerData() || {}
-    if (winners[type]) {
-      winners[type].push.apply(winners[type], data)
+    if (winners[index]) {
+      winners[index].push.apply(winners[index], data)
     } else {
-      winners[type] = Array.isArray(data) ? data : [data]
+      winners[index] = Array.isArray(data) ? data : [data]
     }
     saveFileData(winners, 1)
     ctx.body = genSuccessResponse({
@@ -60,12 +62,14 @@ class Lottery {
   saveNotArriveWinnerData (ctx) {
     let params = ctx.request.body
     let type = params.type
+    let subType = params.subType
     let data = params.data
+    let index = `${type}-${subType}`
     let winners = getNotArriveWinnersData() || {}
-    if (winners[type]) {
-      winners[type].push.apply(winners[type], data)
+    if (winners[index]) {
+      winners[index].push.apply(winners[index], data)
     } else {
-      winners[type] = Array.isArray(data) ? data : [data]
+      winners[index] = Array.isArray(data) ? data : [data]
     }
     saveFileData(winners, 2)
     ctx.body = genSuccessResponse({
@@ -78,13 +82,16 @@ class Lottery {
     method: RequestMethod.GET
   })
   exportFile (ctx) {
-    let type = [1, 2, 3, 4, 5, 0]
+    // let type = [1, 2, 3, 4, 5, 0]
     let defaultType = 0
     let outData = [['工号', '姓名', '部门']]
     let winners = getWinnerData() || {}
-    type.forEach((item) => {
-      outData.push(item === defaultType ? ['特等奖'] : [`${item}等奖`]);
-      outData = outData.concat(winners[item] || []);
+    let keys = Object.keys(winners)
+    keys.forEach((key) => {
+      // outData.push(key === defaultType ? ['特等奖'] : [`${item}等奖`]);
+      let prize = prizeList.find(item => `${item.type}-${item.subType}` === key) || {}
+      outData.push(prize.type === defaultType ? ['特等奖'] : [`${prize.type}等奖`, prize.title]);
+      outData = outData.concat(winners[key] || []);
     })
     // let filename = `/抽奖结果_${Date.now()}.xlsx`
     let filename = '/抽奖结果.xlsx'
@@ -122,6 +129,29 @@ class Lottery {
   reset (ctx) {
     resetData()
     ctx.body = genSuccessResponse()
+  }
+
+  @Request({
+    url: '/removeNotArrivedUser',
+    method: RequestMethod.POST
+  })
+  removeNotArrivedUser (ctx) {
+    let params = ctx.request.body
+    let type = params.type
+    let subType = params.subType
+    let user = params.user
+    let index = `${type}-${subType}`
+    let winners = getWinnerData() || {}
+    let len = (winners[index] || []).length
+    for (let i = 0; i < len; i++) {
+      if (winners[index][i][0] === user[0]) {
+        winners[index].splice(i, 1)
+      }
+    }
+    saveFileData(winners, 3)
+    ctx.body = genSuccessResponse({
+      msg: '移除未到场人员成功'
+    })
   }
 }
 

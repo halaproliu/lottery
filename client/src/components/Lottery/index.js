@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import './index.styl'
 import '@/assets/css/animate.min.css'
 import Music from '@/components/Music'
@@ -13,11 +13,11 @@ function Lottery () {
     let len = prizeList.length - 1
     let [ selectedIndex, setSelectedIndex ] = useState(len)
     let [ selected, setSelected ] = useState(prizeList[len])
-    let [ barWidth, setBarWidth ] = useState('100%')
+    // let [ barWidth, setBarWidth ] = useState('100%')
+    // let [ currCount, setCurrCount ] = useState(selected.count)
     let [ users, setUsers ] = useState([])
     let [ winnerUsers, setWinnerUsers ] = useState([])
     let [ remainUsers, setRemainUsers ] = useState([])
-    let [ currCount, setCurrCount ] = useState(selected.count)
     const initData = async () => {
         const { winnerUsers, remainUsers } = await LotteryApi.getData()
         const { users } = await LotteryApi.getUsers()
@@ -25,16 +25,18 @@ function Lottery () {
         setWinnerUsers(winnerUsers)
         setRemainUsers(remainUsers)
     }
-    const initCurrCount = (count) => {
-        let totalCount = selected.count
-        currCount = totalCount - count
-        setCurrCount(currCount)
-        let barWidth = `${((totalCount - count) / totalCount) * 100}%`
-        setBarWidth(barWidth)
-    }
+    // const initCurrCount = (count) => {
+    //     let totalCount = selected.count
+    //     currCount = totalCount - count
+    //     setCurrCount(currCount)
+    //     let barWidth = `${((totalCount - count) / totalCount) * 100}%`
+    //     setBarWidth(barWidth)
+    // }
     const getCurrentPrize = () => {
         for (let i = len; i >= 0; i--) {
-            if (winnerUsers[i] && winnerUsers[i].length >= prizeList[i].count) {
+            let tmpSelected = prizeList[i]
+            let index = tmpSelected.type + '-' + tmpSelected.subType
+            if (winnerUsers[index] && winnerUsers[index].length >= tmpSelected.count) {
                 continue
             }
             selectedIndex = i
@@ -55,6 +57,7 @@ function Lottery () {
 
     const resetData = () => {
         LotteryApi.resetData()
+        initData()
     }
 
     const exportData = async () => {
@@ -67,28 +70,30 @@ function Lottery () {
     }
     useEffect(() => {
         initData()
+        document.body.style.backgroundColor = 'linear-gradient(to bottom, #131313 0%, #02101c 100%)'
     }, [])
 
     useEffect(() => {
         getCurrentPrize()
     }, [winnerUsers])
 
-    useEffect(() => {
-        if (selected) {
-            let count = (winnerUsers[selected.type] || []).length
-            initCurrCount(count)
-        }
-    }, [selected])
+    // useEffect(() => {
+    //     if (selected) {
+    //         let count = (winnerUsers[selected.type] || []).length
+    //         initCurrCount(count)
+    //     }
+    // }, [selected])
     return (
-        <>
+        <div className="lotter-box">
             <Star></Star>
             <Music></Music>
             <Prize
                 selected={selected}
                 selectedIndex={selectedIndex}
-                currCount={currCount}
-                setCurrCount={setCurrCount}
-                barWidth={barWidth}>
+                // currCount={currCount}
+                // setCurrCount={setCurrCount}
+                // barWidth={barWidth}
+                winnerUsers={winnerUsers}>
             </Prize>
             {
                 (users.length > 0 && remainUsers.length > 0 && selectedIndex !== undefined && selected) && 
@@ -101,7 +106,8 @@ function Lottery () {
                         selected={selected}
                         setSelectedIndex={setSelectedIndex}
                         setSelected={setSelected}
-                        initCurrCount={initCurrCount}
+                        // currCount={currCount}
+                        // initCurrCount={initCurrCount}
                         setWinnerUsers={setWinnerUsers}
                         getCurrentPrize={getCurrentPrize}
                         resetData={resetData}
@@ -111,7 +117,7 @@ function Lottery () {
                     </Main>
                 )
             }
-        </>
+        </div>
     )
 }
 

@@ -49,7 +49,7 @@ export const readFile = (filename) => {
 
 export const writeFile = (filename, data, options = {}) => {
   try {
-    fs.writeFileSync(filename, data, options)
+    return fs.writeFileSync(filename, data, options)
   } catch (e) {
     console.log('写入文件失败：', e)
   }

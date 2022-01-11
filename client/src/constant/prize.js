@@ -1,7 +1,12 @@
 const ROW_COUNT = 7
 const COLUMN_COUNT = 17
-// 每个奖品的个数
-const EACH_COUNT = [1, 1, 1, 1, 1, 5]
+// 每个奖品的每次抽奖个数
+const EACH_COUNT = [
+  1, 
+  1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1,
+  5, 4, 4, 4, 2, 2, 2, 2
+]
 // 公司名称
 const COMPANY = 'BILIBILI'
 // 高亮名牌的位置（组成年份）

@@ -36,7 +36,8 @@ function Main (props) {
     let setWinnerUsers = props.setWinnerUsers
     let setSelectedIndex = props.setSelectedIndex
     let setSelected = props.setSelected
-    let initCurrCount = props.initCurrCount
+    // let currCount = props.currCount
+    // let initCurrCount = props.initCurrCount
     let exportData = props.exportData
     let getCurrentPrize = props.getCurrentPrize
     let isHighlight
@@ -245,24 +246,30 @@ function Main (props) {
     // 设置当前获奖人员（未保存后端）
     const setCurrWinnerUsers = () => {
         let type = selected.type // 当前奖品type
-        let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
+        let subType = selected.subType
+        let index = `${type}-${subType}`
+        let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
         savedWinners.push.apply(savedWinners, selectedUsers)
-        winnerUsers[type] = savedWinners
+        winnerUsers[index] = savedWinners
         setWinnerUsers(winnerUsers)
     }
 
     // 设置奖品剩余个数和进度条
-    const setPrizeData = () => {
-        let type = selected.type // 当前奖品type
-        let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
-        // 设置奖品剩余数量和进度条比例
-        initCurrCount(savedWinners.length)
-    }
+    // const setPrizeData = () => {
+    //     let type = selected.type // 当前奖品type
+    //     let subType = selected.subType
+    //     let index = `${type}-${subType}`
+    //     let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
+    //     // 设置奖品剩余数量和进度条比例
+    //     initCurrCount(savedWinners.length)
+    // }
 
     const saveData = () => {
         if (!selected) return
         let type = selected.type // 当前奖品type
-        let savedWinners = winnerUsers[type] || [] // 当前奖品中奖人
+        let subType = selected.subType
+        let index = `${type}-${subType}`
+        let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
 
         if (selected.count <= savedWinners.length) {
             setSelectedIndex(selectedIndex--)
@@ -276,6 +283,7 @@ function Main (props) {
         if (selectedUsers.length > 0) {
             return setData({
                 type,
+                subType,
                 data: selectedUsers
             })
         }
@@ -295,13 +303,16 @@ function Main (props) {
             selectedUsers = []
             setSelectedUsers([...selectedUsers]) // 选中人数置空
             selectedCardIndex.current = []
-            let currPrizeCount = EACH_COUNT[selectedIndex] // 每次抽奖个数
+            let eachCount = EACH_COUNT[selectedIndex]
+            let index = `${selected.type}-${selected.subType}`
+            let currLeft = prizeList[selectedIndex].count - (winnerUsers[index] || []).length
+            let currPrizeCount =  currLeft > eachCount ? eachCount : currLeft // 每次抽奖个数
             let leftCount = remainUsers.length // 剩余抽奖个数
-
             for (let i = 0; i < currPrizeCount; i++) {
                 let selectedId = random(leftCount) // 选中的人下标
                  // 选中用户
                 selectedUsers.push(remainUsers.splice(selectedId, 1)[0])
+                console.log(selectedUsers)
                 setSelectedUsers([...selectedUsers])
                 leftCount--
                 let cardIndex = random(TOTAL_CARDS)
@@ -312,7 +323,7 @@ function Main (props) {
             }
             if (!isRelottery) {
                 setCurrWinnerUsers()
-                setPrizeData()
+                // setPrizeData()
             }
             selectCard()
         })
@@ -357,6 +368,7 @@ function Main (props) {
             // 动画结束后可以操作
             // setIsLottery(false)
             isLottery = false
+            console.log(selectedIndex)
         })
     }
 
@@ -430,12 +442,24 @@ function Main (props) {
         })
     }
 
+    const isStillHasPrize = () => {
+        let type = selected.type
+        let subType = selected.subType
+        let key = `${type}-${subType}`
+        let prize = prizeList[selectedIndex]
+        if (prize.count === (winnerUsers[key] || []).length && selectedIndex === 0) {
+            return false
+        }
+        return true
+    }
+
     const goLottery = (e) => {
         e.stopPropagation()
         if (isLottery) {
             showBubble('wait')
             return
         }
+        if (!isStillHasPrize) return
         // setIsLottery(true)
         isLottery = true
         saveData()
@@ -451,6 +475,7 @@ function Main (props) {
             showBubble('wait')
             return
         }
+        if (!isStillHasPrize) return
         if (selectedUsers.length === 0) {
             showBubble('tip')
             return
@@ -459,6 +484,7 @@ function Main (props) {
         isLottery = true
         saveNotArriveWinnerData({
             type: selected.type,
+            subType: selected.subType,
             data: selectedUsers
         })
         getCurrentPrize()
@@ -501,7 +527,8 @@ function Main (props) {
         addHighlight()
         resetCard()
         // 重置所有数据
-        setSelectedUsers([])
+        selectedUsers = []
+        setSelectedUsers([...selectedUsers])
         remainUsers = users
         reset() // 清空保存的json
         setShowLottery(false)
@@ -542,14 +569,14 @@ function Main (props) {
             {
                 !showLottey 
                 ? 
-                (<button onClick={toShowLottery}>进入抽奖</button>)
+                (<button className="btn" onClick={toShowLottery}>进入抽奖</button>)
                 :
                 (
                     <div>
-                        <button onClick={goLottery}>抽奖</button>
-                        <button onClick={reLottery}>重新抽奖</button>
-                        <button onClick={exportResult}>导出抽奖结果</button>
-                        <button onClick={resetData}>重置</button>
+                        <button className="btn" onClick={goLottery}>抽奖</button>
+                        <button className="btn" onClick={reLottery}>重新抽奖</button>
+                        <button className="btn" onClick={exportResult}>导出抽奖结果</button>
+                        <button className="btn" onClick={resetData}>重置</button>
                     </div>
                 )
             }
