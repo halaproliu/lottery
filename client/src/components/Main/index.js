@@ -326,6 +326,9 @@ function Main (props) {
                 // setPrizeData()
             }
             selectCard()
+            if (!isStillHasPrize()) {
+                saveData()
+            }
         })
     }
 
@@ -459,7 +462,9 @@ function Main (props) {
             showBubble('wait')
             return
         }
-        if (!isStillHasPrize) return
+        if (!isStillHasPrize()) {
+            return showBubble('finish')
+        }
         // setIsLottery(true)
         isLottery = true
         saveData()
@@ -475,7 +480,9 @@ function Main (props) {
             showBubble('wait')
             return
         }
-        if (!isStillHasPrize) return
+        if (!isStillHasPrize()) {
+            return showBubble('finish')
+        }
         if (selectedUsers.length === 0) {
             showBubble('tip')
             return

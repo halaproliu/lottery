@@ -36,11 +36,16 @@ function Lottery () {
         for (let i = len; i >= 0; i--) {
             let tmpSelected = prizeList[i]
             let index = tmpSelected.type + '-' + tmpSelected.subType
-            if (winnerUsers[index] && winnerUsers[index].length >= tmpSelected.count) {
+            console.log((winnerUsers[index] || []).length, tmpSelected.count)
+            if ((winnerUsers[index] || []).length >= tmpSelected.count) {
+                if (i === 0) {
+                    setSelectedIndex(i)
+                    selected = prizeList[i]
+                    setSelected({...selected})
+                }
                 continue
             }
-            selectedIndex = i
-            setSelectedIndex(selectedIndex)
+            setSelectedIndex(i)
             selected = prizeList[i]
             setSelected({...selected})
             break
