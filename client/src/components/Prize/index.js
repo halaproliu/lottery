@@ -26,7 +26,7 @@ function Prize (props) {
         <label className="lottery-prizeBar__label">{ selected.type === 0 ? '特' : selected.type }等奖</label>
         <label className="lottery-prizeBar__label">{ selected.title }</label>
         ，剩余
-        <label className="lottery-prizeBar__label">{ selected.count }</label>个
+        <label className="lottery-prizeBar__label">{ currCount }</label>个
       </div>
       <ul className="lottery-prizeBar__list">
         {
