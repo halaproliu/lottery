@@ -13,8 +13,9 @@ RUN npm config set registry ${registry}
 # 生产环境不打包devDependencies（优化三）
 RUN npm i --production
 COPY ./server ${dir}
+RUN npm run build
 # RUN yarn --ignore-scripts
 # RUN yarn global add pm2
-RUN npm i -g pm2
+# RUN npm i -g pm2
 EXPOSE 3001
 CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]

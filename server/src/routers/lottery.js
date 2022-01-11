@@ -119,8 +119,9 @@ class Lottery {
     url: '/reset',
     method: RequestMethod.POST
   })
-  reset () {
+  reset (ctx) {
     resetData()
+    ctx.body = genSuccessResponse()
   }
 }
 
