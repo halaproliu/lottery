@@ -18,4 +18,5 @@ RUN npm run build
 # RUN yarn global add pm2
 # RUN npm i -g pm2
 EXPOSE 3001
-CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
+# CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
+CMD ["npm", "start"]
