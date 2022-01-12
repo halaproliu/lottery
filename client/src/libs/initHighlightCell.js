@@ -16,12 +16,10 @@ const initHightlightCell = (num) => {
   let cell = ''
   for (let i = 0; i < str.length; i++) {
     let index = str.charAt(i)
-    console.log('index', index)
     let tmpCell = keys[index]
     let x = 0
     let y = 0
     for (let j = 0; j < tmpCell.length; j++) {
-      console.log(tmpCell[j])
       cell = ''
       let tmpArr = tmpCell[j].split('-')
       x = tmpArr[0]

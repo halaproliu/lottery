@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { prizeList } from '@/constant'
 import './index.styl'
 import * as LotteryApi from '@/api/lottery'
+import MySelect from '../Select'
 
 function Setting () {
   let [ winnerUsers, setWinnerUsers ] = useState([])
@@ -24,8 +25,9 @@ function Setting () {
     setSelectUsers([...users])
   }
 
-  const onChange = (e) => {
-    let title = e.target.value
+  const onChange = (val) => {
+    console.log(val)
+    let title = val
     setTitle(title)
     getSelectUsers(title)
   }
@@ -46,7 +48,7 @@ function Setting () {
   
   return (
     <div className="setting-box">
-      <select className="prize-list__select" onChange={onChange}>
+      {/* <select className="prize-list__select" onChange={onChange}>
         <option value="">请选择</option>
         {
           prizeList.map(prize => {
@@ -55,7 +57,8 @@ function Setting () {
             )
           })
         }
-      </select>
+      </select> */}
+      <MySelect options={prizeList} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
       <select className="prize-list__select">
         <option value="">请选择</option>
         {

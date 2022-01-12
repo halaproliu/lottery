@@ -354,7 +354,8 @@ function Main (props) {
         let users = selectedUsersCurr.current.map(item => item[2]) // 选中用户名字列表
         showBubble('congratulation', {
             user: users.join('、'),
-            prize: selectedCurr.current.title
+            prize: selectedCurr.current.title,
+            year: YEAR
         })
         
         selectedCardIndexCurr.current.forEach((cardIndex, index) => {
@@ -508,7 +509,7 @@ function Main (props) {
             data: selectedUsersCurr.current
         })
         showBubble('relottery', {
-            prize: selectedCurr.current.title
+            prize: preSelectedCurr.current.title
         })
         resetCard().then(_ => {
             lottery(true)
