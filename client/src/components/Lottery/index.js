@@ -42,16 +42,17 @@ function Lottery () {
     }
 
     const setData = (data) => {
-       return LotteryApi.saveData(data)
+        return LotteryApi.saveData(data)
     }
 
     const saveNotArriveWinnerData = (data) => {
         return LotteryApi.saveNotArriveWinnerData(data)
     }
 
-    const resetData = () => {
-        LotteryApi.resetData()
-        initData()
+    const resetData = async () => {
+        await LotteryApi.resetData()
+        await initData()
+        return Promise.resolve()
     }
 
     const exportData = async () => {
@@ -69,6 +70,7 @@ function Lottery () {
 
     useEffect(() => {
         getCurrentPrize()
+        console.log(selectedIndex, selected)
     }, [winnerUsers])
     return (
         <div className="lotter-box">
@@ -86,6 +88,7 @@ function Lottery () {
                         remainUsers={remainUsers}
                         setWinnerUsers={setWinnerUsers}
                         getCurrentPrize={getCurrentPrize}
+                        initData={initData}
                         resetData={resetData}
                         setData={setData}
                         saveNotArriveWinnerData={saveNotArriveWinnerData}

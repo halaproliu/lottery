@@ -30,11 +30,16 @@ function Main (props) {
     let selected = useSelector(state => state.lottery.selected)
     let selectedUsers = useSelector(state => state.lottery.selectedUsers)
     let selectedCardIndex = useSelector(state => state.lottery.selectedCardIndex)
+    let preSelectedIndex = useSelector(state => state.lottery.preSelectedIndex)
+    let preSelected = useSelector(state => state.lottery.preSelected)
     let selectedUsersCurr = useRef(null)
     let selectedCardIndexCurr = useRef(null)
     let selectedIndexCurr = useRef(null)
     let selectedCurr = useRef(null)
+    let preSelectedIndexCurr = useRef(null)
+    let preSelectedCurr = useRef(null)
     const dispatch = useDispatch()
+    const initData = props.initData
     let reset = props.resetData
     let setData = props.setData
     let saveNotArriveWinnerData = props.saveNotArriveWinnerData
@@ -194,8 +199,8 @@ function Main (props) {
             element.style.backgroundColor = `rgba(0,127,127,${Math.random() * 0.7 + 0.25})`
         }
         element.appendChild(createElement('company', COMPANY))
-        element.appendChild(createElement('name', user[1]))
-        element.appendChild(createElement('details', `${user[0]}<br/>${user[2]}`))
+        element.appendChild(createElement('name', user[2]))
+        element.appendChild(createElement('details', `${user[0]}<br/>${user[1]}`))
         return element
     }
 
@@ -246,8 +251,8 @@ function Main (props) {
 
     // 设置当前获奖人员（未保存后端）
     const setCurrWinnerUsers = () => {
-        let type = selectedCurr.current.type // 当前奖品type
-        let subType = selectedCurr.current.subType
+        let type = preSelectedCurr.current.type // 当前奖品type
+        let subType = preSelectedCurr.current.subType
         let index = `${type}-${subType}`
         let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
         savedWinners.push.apply(savedWinners, selectedUsersCurr.current)
@@ -255,14 +260,35 @@ function Main (props) {
         setWinnerUsers(winnerUsers)
     }
 
+    const getEachLotteryCount = (selectedCurr, selectedIndexCurr) => {
+        let eachCount = EACH_COUNT[selectedIndexCurr.current]
+        let index = `${selectedCurr.current.type}-${selectedCurr.current.subType}`
+        let currLeft = prizeList[selectedIndexCurr.current].count - (winnerUsers[index] || []).length
+        let currPrizeCount =  currLeft > eachCount ? eachCount : currLeft // 每次抽奖个数
+        return currPrizeCount
+    }
+
+    const removeCurrWinnerUsers = () => {
+        let type = preSelectedCurr.current.type // 当前奖品type
+        let subType = preSelectedCurr.current.subType
+        let index = `${type}-${subType}`
+        let currPrizeCount = getEachLotteryCount(preSelectedCurr, preSelectedIndexCurr)
+        let start = winnerUsers[index].length - currPrizeCount
+        winnerUsers[index].splice(start, currPrizeCount)
+        setWinnerUsers(winnerUsers => {
+            return {...winnerUsers}
+        })
+    }
+
     const saveData = () => {
-        if (!selectedCurr.current) return
-        let type = selectedCurr.current.type // 当前奖品type
-        let subType = selectedCurr.current.subType
+        console.log(preSelectedCurr.current)
+        if (!preSelectedCurr.current) return
+        let type = preSelectedCurr.current.type // 当前奖品type
+        let subType = preSelectedCurr.current.subType
         let index = `${type}-${subType}`
         let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
 
-        if (selectedCurr.current.count <= savedWinners.length) {
+        if (preSelectedCurr.current.count <= savedWinners.length) {
             dispatch({ type: actions.SET_SELECTED_INDEX, payload: selectedIndexCurr.current })
         }
         if (selectedUsersCurr.current.length > 0) {
@@ -287,18 +313,9 @@ function Main (props) {
         rotateBall().then(() => {
             dispatch({ type: actions.CLEAR_SELECTD_USERS }) // 选中人数置空
             dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX }) // 选中名牌置空
-            let eachCount = EACH_COUNT[selectedIndexCurr.current]
-            console.log('EACH_COUNT', EACH_COUNT)
-            console.log('selectedIndexCurr', selectedIndexCurr.current)
-            console.log('eachCount', eachCount)
-            let index = `${selectedCurr.current.type}-${selectedCurr.current.subType}`
-            console.log('selectedCurr', selectedCurr.current)
-            console.log('index', index)
-            console.log('winnerUsers', winnerUsers)
-            let currLeft = prizeList[selectedIndexCurr.current].count - (winnerUsers[index] || []).length
-            let currPrizeCount =  currLeft > eachCount ? eachCount : currLeft // 每次抽奖个数
+            let currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
             let leftCount = remainUsers.length // 剩余抽奖个数
-            console.log(currPrizeCount)
+            console.log('currPrizeCount', currPrizeCount)
             for (let i = 0; i < currPrizeCount; i++) {
                 let selectedId = random(leftCount) // 选中的人下标
                  // 选中用户
@@ -310,11 +327,11 @@ function Main (props) {
                 }
                 dispatch({ type: actions.SET_SELECTED_CARD_INDEX, payload: cardIndex })
             }
+            selectCard()
             if (!isRelottery) {
                 setCurrWinnerUsers()
-                // setPrizeData()
+                getCurrentPrize()
             }
-            selectCard()
             if (!isStillHasPrize()) {
                 saveData()
             }
@@ -327,7 +344,7 @@ function Main (props) {
         let users = selectedUsersCurr.current.map(item => item[1]) // 选中用户名字列表
         showBubble('congratulation', {
             user: users.join('、'),
-            prize: selectedCurr.title
+            prize: selectedCurr.current.title
         })
         
         selectedCardIndexCurr.current.forEach((cardIndex, index) => {
@@ -364,7 +381,7 @@ function Main (props) {
 
     const changeCard = (cardIndex, user) => {
         let card = threeDCards.current[cardIndex].element
-        card.innerHTML = `<div class="company">${COMPANY}</div><div class="name">${user[1]}</div><div class="details">${user[0]}<br/>${user[2] || 'PSST'}</div>`
+        card.innerHTML = `<div class="company">${COMPANY}</div><div class="name">${user[2]}</div><div class="details">${user[0]}<br/>${user[1] || 'PSST'}</div>`
     }
 
     // 切换名牌背景
@@ -454,13 +471,13 @@ function Main (props) {
         }
         isLottery = true
         saveData()
-        getCurrentPrize()
+        dispatch({ type: actions.SET_PREV_SELECTED_INDEX, payload: selectedIndexCurr.current }) // 保存上一个选中prize index
         resetCard().then(_ => {
             lottery()
         })
     }
     
-    const reLottery = (e) => {
+    const reLottery = async (e) => {
         e.stopPropagation()
         if (isLottery) {
             showBubble('wait')
@@ -474,12 +491,12 @@ function Main (props) {
             return
         }
         isLottery = true
+        removeCurrWinnerUsers()
         saveNotArriveWinnerData({
-            type: selectedCurr.current.type,
-            subType: selectedCurr.current.subType,
+            type: preSelectedCurr.current.type,
+            subType: preSelectedCurr.current.subType,
             data: selectedUsersCurr.current
         })
-        getCurrentPrize()
         showBubble('relottery', {
             prize: selectedCurr.current.title
         })
@@ -560,6 +577,12 @@ function Main (props) {
         selectedCardIndexCurr.current = selectedCardIndex
     }, [selectedIndex, selected, selectedUsers, selectedCardIndex])
 
+    useEffect(() => {
+        preSelectedIndexCurr.current = preSelectedIndex
+        preSelectedCurr.current = preSelected
+        console.log(preSelectedIndexCurr.current)
+        console.log(preSelectedCurr.current)
+    }, [preSelectedIndex, preSelected])
     return (
         <>
             <div ref={container} className="lottery-container"></div>

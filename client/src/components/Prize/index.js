@@ -4,20 +4,7 @@ import { prizeList } from '@/constant'
 import classnames from 'classnames'
 import { useSelector } from 'react-redux'
 
-// const CountComp = (props) => {
-//   const prize = props.prize
-//   const currCount = props.currCount
-//   if (props.selectedIndex === props.index) {
-//     return <div className="lottery-prizeBar__count-left">{currCount + '/' + prize.count}</div>
-//   } else if (props.selectedIndex < props.index) {
-//     return <div className="lottery-prizeBar__count-left">{0 + '/' + prize.count}</div>
-//   } else {
-//     return <div className="lottery-prizeBar__count-left">{prize.count + '/' + prize.count}</div>
-//   }
-// }
 function Prize (props) {
-  // let selected = props.selected
-  // let selectedIndex = props.selectedIndex
   const selectedIndex = useSelector(state => state.lottery.selectedIndex)
   const selected = useSelector(state => state.lottery.selected)
   const winnerUsers = props.winnerUsers || {}
