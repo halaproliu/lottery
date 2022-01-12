@@ -19,12 +19,13 @@ class Stars {
     this.ctx = this.element.getContext('2d')
     this.focalLength = this.element.width * 2
     for (let i = 0; i < this.starNums; i++) {
-      this.stars.push({
+      let star = {
         x: Math.random() * this.element.width,
         y: Math.random() * this.element.height,
         z: Math.random() * this.element.width,
         o: '0.' + Math.floor(Math.random() * 99) + 1
-      })
+      }
+      this.stars.push(star)
     }
     this.execute()
   }
@@ -60,6 +61,10 @@ class Stars {
       let pixelY = (star.y - centerY) * (this.focalLength / star.z)
       pixelY += centerY
       let pixelRadius = 1 * (this.focalLength / star.z)
+      // 避免方块过大
+      if (pixelRadius > 200) {
+        pixelRadius = pixelRadius - 150
+      }
       this.ctx.fillRect(pixelX, pixelY, pixelRadius, pixelRadius)
       this.ctx.fillStyle = `rgba(209, 255, 255, ${star.o})`
     }
