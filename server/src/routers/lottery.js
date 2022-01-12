@@ -140,7 +140,9 @@ class Lottery {
     let index = `${type}-${subType}`
     let winners = getWinnerData() || {}
     let len = (winners[index] || []).length
-    for (let i = 0; i < len; i++) {
+    console.log(winners[index])
+    for (let i = len - 1; i >= 0; i--) {
+      console.log(winners[index][i])
       if (winners[index][i][0] === user[0]) {
         winners[index].splice(i, 1)
       }

@@ -47,6 +47,7 @@ function Setting () {
   return (
     <div className="setting-box">
       <select className="prize-list__select" onChange={onChange}>
+        <option value="">请选择</option>
         {
           prizeList.map(prize => {
             return (
@@ -56,6 +57,7 @@ function Setting () {
         }
       </select>
       <select className="prize-list__select">
+        <option value="">请选择</option>
         {
           selectUsers.map(user => {
             return (
@@ -64,7 +66,7 @@ function Setting () {
           })
         }
       </select>
-      <button className="btn btn-primary" onClick={onSubmit}>提交</button>
+      <button className="btn btn-primary" onClick={onSubmit}>移除中奖</button>
     </div>
   )
 }
