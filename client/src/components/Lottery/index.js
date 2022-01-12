@@ -16,6 +16,7 @@ function Lottery () {
     let [ users, setUsers ] = useState([])
     let [ winnerUsers, setWinnerUsers ] = useState([])
     let [ remainUsers, setRemainUsers ] = useState([])
+    let [ isLoaded, setIsLoaded ] = useState(false)
     const dispatch = useDispatch()
     const selectedIndex = useSelector(state => state.lottery.selectedIndex)
     const selected = useSelector(state => state.lottery.selected)
@@ -25,6 +26,7 @@ function Lottery () {
         setUsers(users)
         setWinnerUsers(winnerUsers)
         setRemainUsers(remainUsers)
+        setIsLoaded(true)
     }
     const getCurrentPrize = () => {
         for (let i = len; i >= 0; i--) {
@@ -69,16 +71,15 @@ function Lottery () {
     }, [])
 
     useEffect(() => {
-        getCurrentPrize()
-        console.log(selectedIndex, selected)
-    }, [winnerUsers])
+        if (isLoaded) {
+            getCurrentPrize()
+        }
+    }, [winnerUsers, isLoaded])
     return (
         <div className="lotter-box">
             <Star></Star>
             <Music></Music>
-            {
-                selected && selected.type && <Prize winnerUsers={winnerUsers} />
-            }
+            <Prize winnerUsers={winnerUsers} />
             {
                 (users.length > 0 && remainUsers.length > 0 && selectedIndex !== undefined && selected) && 
                 (

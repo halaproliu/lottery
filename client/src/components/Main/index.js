@@ -257,7 +257,7 @@ function Main (props) {
         let savedWinners = winnerUsers[index] || [] // 当前奖品中奖人
         savedWinners.push.apply(savedWinners, selectedUsersCurr.current)
         winnerUsers[index] = savedWinners
-        setWinnerUsers(winnerUsers)
+        setWinnerUsers(...[winnerUsers])
     }
 
     const getEachLotteryCount = (selectedCurr, selectedIndexCurr) => {
@@ -281,7 +281,6 @@ function Main (props) {
     }
 
     const saveData = () => {
-        console.log(preSelectedCurr.current)
         if (!preSelectedCurr.current) return
         let type = preSelectedCurr.current.type // 当前奖品type
         let subType = preSelectedCurr.current.subType
@@ -315,7 +314,6 @@ function Main (props) {
             dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX }) // 选中名牌置空
             let currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
             let leftCount = remainUsers.length // 剩余抽奖个数
-            console.log('currPrizeCount', currPrizeCount)
             for (let i = 0; i < currPrizeCount; i++) {
                 let selectedId = random(leftCount) // 选中的人下标
                  // 选中用户
@@ -537,6 +535,8 @@ function Main (props) {
         resetCard()
         // 重置所有数据
         dispatch({ type: actions.CLEAR_SELECTD_USERS })
+        dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX })
+        dispatch({ type: actions.RESET_PREV_SELECTED_INDEX })
         remainUsers = users
         reset() // 清空保存的json
         setShowLottery(false)
@@ -580,8 +580,6 @@ function Main (props) {
     useEffect(() => {
         preSelectedIndexCurr.current = preSelectedIndex
         preSelectedCurr.current = preSelected
-        console.log(preSelectedIndexCurr.current)
-        console.log(preSelectedCurr.current)
     }, [preSelectedIndex, preSelected])
     return (
         <>

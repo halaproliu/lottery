@@ -41,7 +41,6 @@ function Setting () {
 
   useEffect(() => {
     initData()
-    console.log(prizeList[0].title)
     getSelectUsers(prizeList[0].title)
   }, [])
   

@@ -7,15 +7,17 @@ import { useSelector } from 'react-redux'
 function Prize (props) {
   const selectedIndex = useSelector(state => state.lottery.selectedIndex)
   const selected = useSelector(state => state.lottery.selected)
+  const preSelected = useSelector(state => state.lottery.preSelected)
+  const preSelectedIndex = useSelector(state => state.lottery.preSelectedIndex)
   const winnerUsers = props.winnerUsers || {}
-  let index = `${selected.type}-${selected.subType}`
-  let currCount = selected.count - (winnerUsers[index] || []).length
+  let index = `${preSelected.type}-${preSelected.subType}`
+  let currCount = preSelected.count - (winnerUsers[index] || []).length
   return (
     <div className="lottery-prizeBar">
       <div className="lottery-prizeBar__title">
         正在抽取
-        <label className="lottery-prizeBar__label">{ selected.type === 0 ? '特' : selected.type }等奖</label>
-        <label className="lottery-prizeBar__label">{ selected.title }</label>
+        <label className="lottery-prizeBar__label">{ preSelected.type === 0 ? '特' : preSelected.type }等奖</label>
+        <label className="lottery-prizeBar__label">{ preSelected.title }</label>
         ，剩余
         <label className="lottery-prizeBar__label">{ currCount }</label>个
       </div>
@@ -25,13 +27,12 @@ function Prize (props) {
             let key = `${prize.type}-${prize.subType}`
             let hasLotteryCount = (winnerUsers[key] || []).length
             let leftCount = prize.count - hasLotteryCount
-            // let defaultType = 0
-            // let isShow = (prize.type === selected.type && prize.subType === selected.subType) || (prize.type !== selected.type && prize.subType === defaultType)
-            let isShow = prize.type === selected.type
+            // let isShow = prize.type === selected.type
+            let isShow = prize.type === preSelected.type
             let barWidth = `${(leftCount / prize.count) * 100}%`
             return (
               isShow && (
-                <li className={classnames('lottery-prizeBar__item', {'shine': selectedIndex === index})} key={key}>
+                <li className={classnames('lottery-prizeBar__item', {'shine': preSelectedIndex === index})} key={key}>
                   <div className="lottery-prizeBar__img">
                     <img src={prize.img} alt={prize.title} />
                   </div>

@@ -9,7 +9,6 @@ function Music () {
     const audioRef = useRef(null)
     const animateFn = () => {
         window.requestAnimationFrame(() => {
-            console.log(stopAnimate)
             if (stopAnimate) return
             setMusicStyle({
                 transform: `rotate(${rotated % 360}deg)`

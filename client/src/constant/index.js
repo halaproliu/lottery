@@ -1,4 +1,22 @@
 export const prizeList = [{
+  type: 0,
+  subType: 0,
+  count: 1,
+  title: '特等奖-1',
+  img: './img/huawei.png'
+}, {
+  type: 0,
+  subType: 1,
+  count: 1,
+  title: '特等奖-2',
+  img: './img/huawei.png'
+}, {
+  type: 0,
+  subType: 2,
+  count: 1,
+  title: '特等奖-3',
+  img: './img/huawei.png'
+}, {
   type: 1,
   subType: 0,
   count: 1,
@@ -36,7 +54,7 @@ export const prizeList = [{
   img: './img/huawei.png'
 }, {
   type: 3,
-  subType: 2,
+  subType: 1,
   count: 2,
   title: 'airpods pro',
   img: './img/huawei.png'

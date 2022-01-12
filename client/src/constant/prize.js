@@ -2,6 +2,7 @@ const ROW_COUNT = 7
 const COLUMN_COUNT = 17
 // 每个奖品的每次抽奖个数
 const EACH_COUNT = [
+  1, 1, 1,
   1, 
   1, 1, 1, 1,
   2, 2, 4, 5, 2, 4,

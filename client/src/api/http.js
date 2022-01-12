@@ -37,8 +37,6 @@ api.interceptors.response.use(
     }
   },
   err => {
-    console.log(err)
-    console.log(err.response)
     if (!err.response) {
       return Promise.reject(err)
     }
