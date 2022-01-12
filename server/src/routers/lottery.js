@@ -82,18 +82,15 @@ class Lottery {
     method: RequestMethod.GET
   })
   exportFile (ctx) {
-    // let type = [1, 2, 3, 4, 5, 0]
     let defaultType = 0
     let outData = [['工号', '姓名', '部门']]
     let winners = getWinnerData() || {}
     let keys = Object.keys(winners)
     keys.forEach((key) => {
-      // outData.push(key === defaultType ? ['特等奖'] : [`${item}等奖`]);
       let prize = prizeList.find(item => `${item.type}-${item.subType}` === key) || {}
-      outData.push(prize.type === defaultType ? ['特等奖'] : [`${prize.type}等奖`, prize.title]);
+      outData.push(prize.type === defaultType ? ['特等奖', prize.title] : [`${prize.type}等奖`, prize.title]);
       outData = outData.concat(winners[key] || []);
     })
-    // let filename = `/抽奖结果_${Date.now()}.xlsx`
     let filename = '/抽奖结果.xlsx'
     let paths = path.join(__dirname, '../', config.staticPath, filename)
     writeXML(outData, paths)

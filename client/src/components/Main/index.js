@@ -509,14 +509,8 @@ function Main (props) {
             showBubble('wait')
             return
         }
-        saveData().then(() => {
-            // resetCard().then(() => {
-            //     selectedUsers = []
-            //     setSelectedUsers([...selectedUsers])
-            // })
-            exportData().then(() => {
-                showBubble('reset')
-            })
+        exportData().then(() => {
+            showBubble('reset')
         })
     }
 
