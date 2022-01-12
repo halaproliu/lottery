@@ -18,12 +18,13 @@ const HIGHLIGHT_CELL = [
   '1-13', '1-14', '1-15', '2-15', '3-13', '3-14', '3-15', '4-13', '5-13', '5-14', '5-15'
 ]
 
-
+const YEAR = 2022
 
 export {
   ROW_COUNT,
   COLUMN_COUNT,
   EACH_COUNT,
   COMPANY,
-  HIGHLIGHT_CELL
+  HIGHLIGHT_CELL,
+  YEAR
 }

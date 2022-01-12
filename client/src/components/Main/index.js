@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { ROW_COUNT, COLUMN_COUNT, HIGHLIGHT_CELL, COMPANY, EACH_COUNT } from '@/constant/prize'
+import { ROW_COUNT, COLUMN_COUNT, COMPANY, EACH_COUNT, YEAR } from '@/constant/prize'
+import initHightlightCell from '@/libs/initHighlightCell'
 import './index.styl'
 import Bubble from '@/components/Bubble'
 import MESSAGES from '@/constant/message'
@@ -9,6 +10,7 @@ import * as actions from '@/reducers/actions'
 import '@/assets/css/animate.min.css'
 
 let isLottery = false
+let highlightCell = initHightlightCell(YEAR)
 function Main (props) {
     let container = useRef(null)
     let firstRender = useRef(true) // 记录第一次render
@@ -69,7 +71,7 @@ function Main (props) {
         for (let i = 0; i < ROW_COUNT; i++) {
             for (let j = 0; j < COLUMN_COUNT; j++) {
                 // 获取高亮名牌
-                isHighlight = HIGHLIGHT_CELL.includes(`${i}-${j}`)
+                isHighlight = highlightCell.includes(`${i}-${j}`)
                 let element = createCard(users[index % len], isHighlight, index, showTable)
                 let threeDObject = new THREE.CSS3DObject(element)
                 threeDObject.position.x = Math.random() * 4000 - 2000
