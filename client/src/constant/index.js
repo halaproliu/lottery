@@ -1,3 +1,11 @@
+/**
+ * @description 奖品信息
+ * @param type 0: 特等奖，1: 一等奖， 2: 二等奖，以此类推
+ * @param subType 奖品子类型，用以区分
+ * @param count 奖品数量
+ * @param title 奖品名称
+ * @param img 奖品图片（放置在client/public/img文件夹）
+ */
 export const prizeList = [{
   type: 0,
   subType: 0,
