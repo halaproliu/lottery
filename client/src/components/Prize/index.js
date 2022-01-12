@@ -2,6 +2,7 @@ import React from 'react'
 import './index.styl'
 import { prizeList } from '@/constant'
 import classnames from 'classnames'
+import { useSelector } from 'react-redux'
 
 // const CountComp = (props) => {
 //   const prize = props.prize
@@ -15,8 +16,10 @@ import classnames from 'classnames'
 //   }
 // }
 function Prize (props) {
-  let selected = props.selected
-  let selectedIndex = props.selectedIndex
+  // let selected = props.selected
+  // let selectedIndex = props.selectedIndex
+  const selectedIndex = useSelector(state => state.lottery.selectedIndex)
+  const selected = useSelector(state => state.lottery.selected)
   const winnerUsers = props.winnerUsers || {}
   let index = `${selected.type}-${selected.subType}`
   let currCount = selected.count - (winnerUsers[index] || []).length

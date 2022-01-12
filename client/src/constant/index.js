@@ -31,14 +31,8 @@ export const prizeList = [{
 }, {
   type: 3,
   subType: 0,
-  count: 1,
-  title: 'sony wi-1000xm2 颈挂式入耳无线蓝牙耳机--金色',
-  img: './img/huawei.png'
-}, {
-  type: 3,
-  subType: 1,
-  count: 1,
-  title: 'sony wi-1000xm2 颈挂式入耳无线蓝牙耳机--黑色',
+  count: 2,
+  title: 'sony wi-1000xm2 颈挂式入耳无线蓝牙耳机',
   img: './img/huawei.png'
 }, {
   type: 3,

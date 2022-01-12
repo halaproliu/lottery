@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { SET_SELECTED_INDEX } from '@/reducers/actions'
 import './index.styl'
 import '@/assets/css/animate.min.css'
 import Music from '@/components/Music'
@@ -11,13 +13,12 @@ import config from '@/config'
 
 function Lottery () {
     let len = prizeList.length - 1
-    let [ selectedIndex, setSelectedIndex ] = useState(len)
-    let [ selected, setSelected ] = useState(prizeList[len])
-    // let [ barWidth, setBarWidth ] = useState('100%')
-    // let [ currCount, setCurrCount ] = useState(selected.count)
     let [ users, setUsers ] = useState([])
     let [ winnerUsers, setWinnerUsers ] = useState([])
     let [ remainUsers, setRemainUsers ] = useState([])
+    const dispatch = useDispatch()
+    const selectedIndex = useSelector(state => state.lottery.selectedIndex)
+    const selected = useSelector(state => state.lottery.selected)
     const initData = async () => {
         const { winnerUsers, remainUsers } = await LotteryApi.getData()
         const { users } = await LotteryApi.getUsers()
@@ -25,29 +26,17 @@ function Lottery () {
         setWinnerUsers(winnerUsers)
         setRemainUsers(remainUsers)
     }
-    // const initCurrCount = (count) => {
-    //     let totalCount = selected.count
-    //     currCount = totalCount - count
-    //     setCurrCount(currCount)
-    //     let barWidth = `${((totalCount - count) / totalCount) * 100}%`
-    //     setBarWidth(barWidth)
-    // }
     const getCurrentPrize = () => {
         for (let i = len; i >= 0; i--) {
             let tmpSelected = prizeList[i]
             let index = tmpSelected.type + '-' + tmpSelected.subType
-            console.log((winnerUsers[index] || []).length, tmpSelected.count)
             if ((winnerUsers[index] || []).length >= tmpSelected.count) {
                 if (i === 0) {
-                    setSelectedIndex(i)
-                    selected = prizeList[i]
-                    setSelected({...selected})
+                    dispatch({ type: SET_SELECTED_INDEX, payload: i })
                 }
                 continue
             }
-            setSelectedIndex(i)
-            selected = prizeList[i]
-            setSelected({...selected})
+            dispatch({ type: SET_SELECTED_INDEX, payload: i })
             break
         }
     }
@@ -81,25 +70,13 @@ function Lottery () {
     useEffect(() => {
         getCurrentPrize()
     }, [winnerUsers])
-
-    // useEffect(() => {
-    //     if (selected) {
-    //         let count = (winnerUsers[selected.type] || []).length
-    //         initCurrCount(count)
-    //     }
-    // }, [selected])
     return (
         <div className="lotter-box">
             <Star></Star>
             <Music></Music>
-            <Prize
-                selected={selected}
-                selectedIndex={selectedIndex}
-                // currCount={currCount}
-                // setCurrCount={setCurrCount}
-                // barWidth={barWidth}
-                winnerUsers={winnerUsers}>
-            </Prize>
+            {
+                selected && selected.type && <Prize winnerUsers={winnerUsers} />
+            }
             {
                 (users.length > 0 && remainUsers.length > 0 && selectedIndex !== undefined && selected) && 
                 (
@@ -107,12 +84,6 @@ function Lottery () {
                         users={users}
                         winnerUsers={winnerUsers}
                         remainUsers={remainUsers}
-                        selectedIndex={selectedIndex}
-                        selected={selected}
-                        setSelectedIndex={setSelectedIndex}
-                        setSelected={setSelected}
-                        // currCount={currCount}
-                        // initCurrCount={initCurrCount}
                         setWinnerUsers={setWinnerUsers}
                         getCurrentPrize={getCurrentPrize}
                         resetData={resetData}
