@@ -39,7 +39,6 @@ function Main (props) {
     let preSelectedIndexCurr = useRef(null)
     let preSelectedCurr = useRef(null)
     const dispatch = useDispatch()
-    const initData = props.initData
     let reset = props.resetData
     let setData = props.setData
     let saveNotArriveWinnerData = props.saveNotArriveWinnerData
@@ -261,6 +260,7 @@ function Main (props) {
     }
 
     const getEachLotteryCount = (selectedCurr, selectedIndexCurr) => {
+        console.log(winnerUsers)
         let eachCount = EACH_COUNT[selectedIndexCurr.current]
         let index = `${selectedCurr.current.type}-${selectedCurr.current.subType}`
         let currLeft = prizeList[selectedIndexCurr.current].count - (winnerUsers[index] || []).length
@@ -272,12 +272,12 @@ function Main (props) {
         let type = preSelectedCurr.current.type // 当前奖品type
         let subType = preSelectedCurr.current.subType
         let index = `${type}-${subType}`
-        let currPrizeCount = getEachLotteryCount(preSelectedCurr, preSelectedIndexCurr)
+        let eachCount = preSelectedCurr.current.count
+        let preCount = (winnerUsers[index] || []).length % eachCount
+        let currPrizeCount = preCount === 0 ? eachCount : preCount
         let start = winnerUsers[index].length - currPrizeCount
         winnerUsers[index].splice(start, currPrizeCount)
-        setWinnerUsers(winnerUsers => {
-            return {...winnerUsers}
-        })
+        setWinnerUsers({...winnerUsers})
     }
 
     const saveData = () => {
@@ -312,7 +312,15 @@ function Main (props) {
         rotateBall().then(() => {
             dispatch({ type: actions.CLEAR_SELECTD_USERS }) // 选中人数置空
             dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX }) // 选中名牌置空
-            let currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
+            let currPrizeCount
+            if (isRelottery) {
+                console.log(preSelectedCurr, preSelectedIndexCurr)
+                console.log(selectedCurr, selectedIndexCurr)
+                currPrizeCount = getEachLotteryCount(preSelectedCurr, preSelectedIndexCurr)
+            } else {
+                currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
+            }
+            console.log(currPrizeCount)
             let leftCount = remainUsers.length // 剩余抽奖个数
             for (let i = 0; i < currPrizeCount; i++) {
                 let selectedId = random(leftCount) // 选中的人下标
@@ -326,10 +334,12 @@ function Main (props) {
                 dispatch({ type: actions.SET_SELECTED_CARD_INDEX, payload: cardIndex })
             }
             selectCard()
-            if (!isRelottery) {
-                setCurrWinnerUsers()
-                getCurrentPrize()
-            }
+            // if (!isRelottery) {
+            //     setCurrWinnerUsers()
+            //     getCurrentPrize()
+            // }
+            setCurrWinnerUsers()
+            getCurrentPrize()
             if (!isStillHasPrize()) {
                 saveData()
             }
@@ -339,7 +349,7 @@ function Main (props) {
     const selectCard = (duration = 600) => {
         let width = 140
         let tag = -(selectedUsersCurr.current.length - 1) / 2
-        let users = selectedUsersCurr.current.map(item => item[1]) // 选中用户名字列表
+        let users = selectedUsersCurr.current.map(item => item[2]) // 选中用户名字列表
         showBubble('congratulation', {
             user: users.join('、'),
             prize: selectedCurr.current.title
@@ -526,15 +536,16 @@ function Main (props) {
         }
         showBubble('reset')
         addHighlight()
-        resetCard()
-        // 重置所有数据
-        dispatch({ type: actions.CLEAR_SELECTD_USERS })
-        dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX })
-        dispatch({ type: actions.RESET_PREV_SELECTED_INDEX })
-        remainUsers = users
-        reset() // 清空保存的json
-        setShowLottery(false)
-        switchScreen('enter')
+        resetCard().then(() => {
+            // 重置所有数据
+            dispatch({ type: actions.CLEAR_SELECTD_USERS })
+            dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX })
+            dispatch({ type: actions.RESET_PREV_SELECTED_INDEX })
+            remainUsers = users
+            reset() // 清空保存的json
+            setShowLottery(false)
+            switchScreen('enter')
+        })
     }
 
     // 展示弹框提示

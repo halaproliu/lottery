@@ -65,6 +65,9 @@ class Stars {
       if (pixelRadius > 200) {
         pixelRadius = pixelRadius - 150
       }
+      if (pixelRadius > 400) {
+        pixelRadius = pixelRadius - 350
+      }
       this.ctx.fillRect(pixelX, pixelY, pixelRadius, pixelRadius)
       this.ctx.fillStyle = `rgba(209, 255, 255, ${star.o})`
     }

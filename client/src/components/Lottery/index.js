@@ -89,7 +89,6 @@ function Lottery () {
                         remainUsers={remainUsers}
                         setWinnerUsers={setWinnerUsers}
                         getCurrentPrize={getCurrentPrize}
-                        initData={initData}
                         resetData={resetData}
                         setData={setData}
                         saveNotArriveWinnerData={saveNotArriveWinnerData}
