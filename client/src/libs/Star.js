@@ -62,7 +62,7 @@ class Stars {
       pixelY += centerY
       let pixelRadius = 1 * (this.focalLength / star.z)
       // 避免方块过大
-      pixelRadius = pixelRadius % 50
+      pixelRadius = pixelRadius % 10
       this.ctx.fillRect(pixelX, pixelY, pixelRadius, pixelRadius)
       this.ctx.fillStyle = `rgba(209, 255, 255, ${star.o})`
     }
