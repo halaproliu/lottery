@@ -48,16 +48,6 @@ function Setting () {
   
   return (
     <div className="setting-box">
-      {/* <select className="prize-list__select" onChange={onChange}>
-        <option value="">请选择</option>
-        {
-          prizeList.map(prize => {
-            return (
-              <option value={prize.title} key={prize.title}>{ prize.title }</option>
-            )
-          })
-        }
-      </select> */}
       <MySelect options={prizeList} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
       <select className="prize-list__select">
         <option value="">请选择</option>

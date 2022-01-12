@@ -1,6 +1,9 @@
 .custom-select
     position relative
     &__inner
+        display inline-block
+        position relative
+    &__input
         padding 0 15px
         border none
         border-radius 4px
@@ -18,6 +21,11 @@
         transition all 2s ease-in-out
         &:focus
             box-shadow 0 0 5px rgb(19, 12, 11)
+    &__suffix
+        position absolute
+        top 50%
+        right 5px
+        color #c0c4cc
     &__dropdown
         list-style none
         padding 6px 0
