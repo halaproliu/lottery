@@ -36,7 +36,6 @@ function Setting () {
     let prize = getSelectedPrize(title)
     let key = `${prize.type}-${prize.subType}`
     let users = (winnerUsers[key] || [])
-    console.log(users)
     setSelectUsers([...users])
   }
 
@@ -49,6 +48,17 @@ function Setting () {
   const onSelectUser = (val) => {
     setUser(() => val)
     selectUser.current = selectUsers.find(item => item[2] === val)
+  }
+
+  const removeSelectUser = (user) => {
+    let len = selectUsers.length - 1
+    for (let i = len; i >= 0; i--) {
+      if (selectUsers[i][0] === user[0]) {
+        selectUsers.splice(i, 1)
+        setSelectUsers([...selectUsers])
+        break
+      }
+    }
   }
 
   const onSubmit = async () => {
@@ -64,6 +74,8 @@ function Setting () {
       subType: prize.subType,
       user: selectUser.current
     })
+    removeSelectUser(selectUser.current)
+    setUser('')
     alert('移除中奖人员成功')
   }
 
