@@ -42,13 +42,21 @@ function Setting () {
   }
 
   const onSubmit = async () => {
+    if (!title || !selectUser.length) {
+      return alert('请选择移除的用户')
+    }
     let prize = getSelectedPrize(title)
-    await LotteryApi.removeNotArrivedUser({
+    if ((winnerUsers[`${prize.type}-${prize.subType}`] || []).length === 0) {
+      return alert('不存在需要移除的用户')
+    }
+    const { code } = await LotteryApi.removeNotArrivedUser({
       type: prize.type,
       subType: prize.subType,
       user: selectUser
     })
-    alert('移除中奖人员成功')
+    if (code === 200) {
+      alert('移除中奖人员成功')
+    }
   }
 
   useEffect(() => {

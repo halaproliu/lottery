@@ -18,9 +18,11 @@
         color #606266
         min-width 200px
         margin-top 20px
-        transition all 2s ease-in-out
-        &:focus
-            box-shadow 0 0 5px rgb(19, 12, 11)
+        transition all .2s ease-in-out
+        // &:focus
+        //     box-shadow 0 0 5px rgb(19, 12, 11)
+        &.is-hover
+            border-color #4094ff
     &__suffix
         position absolute
         top 50%
@@ -33,12 +35,11 @@
         box-sizing border-box
         position absolute
         left 20px
-        top 65px
+        top 60px
         background-color #fff
         overflow scroll
         width 200px
         height 200px
-        // box-shadow 1px 1px 1px 0 rgb(0 0 0 / 10%)
         border 1px solid #dcdfe6
         z-index 10
         &:before
