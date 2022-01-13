@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { prizeList } from '@/constant'
 import './index.styl'
 import * as LotteryApi from '@/api/lottery'
@@ -10,7 +10,7 @@ function Setting () {
   let [ prizes, setPrizes ] = useState([])
   let [ title, setTitle ] = useState('')
   let [ user, setUser ] = useState('')
-  let selectUser = []
+  let selectUser = useRef(null)
   const initData = async () => {
     const { winnerUsers } = await LotteryApi.getData()
     setWinnerUsers(winnerUsers)
@@ -24,7 +24,6 @@ function Setting () {
         return prize
       }
     })
-    console.log(arr)
     setPrizes([...arr])
   }
 
@@ -37,6 +36,7 @@ function Setting () {
     let prize = getSelectedPrize(title)
     let key = `${prize.type}-${prize.subType}`
     let users = (winnerUsers[key] || [])
+    console.log(users)
     setSelectUsers([...users])
   }
 
@@ -48,25 +48,23 @@ function Setting () {
   
   const onSelectUser = (val) => {
     setUser(() => val)
-    selectUser = selectUsers.find(item => item[2] === val)
+    selectUser.current = selectUsers.find(item => item[2] === val)
   }
 
   const onSubmit = async () => {
-    if (!title || !selectUser.length) {
+    if (!title || !selectUser.current.length) {
       return alert('请选择移除的用户')
     }
     let prize = getSelectedPrize(title)
     if ((winnerUsers[`${prize.type}-${prize.subType}`] || []).length === 0) {
       return alert('不存在需要移除的用户')
     }
-    const { code } = await LotteryApi.removeNotArrivedUser({
+    await LotteryApi.removeNotArrivedUser({
       type: prize.type,
       subType: prize.subType,
-      user: selectUser
+      user: selectUser.current
     })
-    if (code === 200) {
-      alert('移除中奖人员成功')
-    }
+    alert('移除中奖人员成功')
   }
 
   useEffect(() => {
