@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import classNames from 'classnames'
 import './index.styl'
 
@@ -8,13 +8,13 @@ function MySelect (props) {
     const valueKey = props.valueKey || 'value'
     const idKey = props.idKey || 'id'
     const placeholder = props.placeholder || '请选择'
+    const currentValue = props.currentValue || ''
     const onChange = props.onChange
     const [ hoverIndex, setHoverIndex ] = useState(null)
     const [ openSelect, setOpenSelect ] = useState(false)
-    const [ value, setValue ] = useState('')
+    const ref = useRef(null)
 
     const onSelect = (e, val, index) => {
-        setValue(val)
         setOpenSelect(false)
         typeof onChange === 'function' && onChange(val, index)
     }
@@ -29,27 +29,36 @@ function MySelect (props) {
         setHoverIndex(index)
     }
 
+    const onSelectComponentClick = (e) => {
+        e.nativeEvent.stopImmediatePropagation()
+    }
+
     useEffect(() => {
         document.addEventListener('click', (e) => {
-            const classList = e.target.classList
-            const classes = ['dropdown-item', 'custom-select__input', 'custom-select__dropdown', 'custom-select__inner', 'custom-select__suffix', 'custom-select__icon']
-            let isContains = classes.reduce((prev, next) => {
-                return prev || classList.contains(next)
-            }, false)
-            if (!isContains) {
+            e = e || window.event
+            const target = e.target
+            if (!ref.current.contains(target) && target !== ref.current) {
                 setOpenSelect(false)
             }
+            // const classList = e.target.classList
+            // const classes = ['dropdown-item', 'custom-select__input', 'custom-select__dropdown', 'custom-select__inner', 'custom-select__suffix', 'custom-select__icon']
+            // let isContains = classes.reduce((prev, next) => {
+            //     return prev || classList.contains(next)
+            // }, false)
+            // if (!isContains) {
+            //     setOpenSelect(false)
+            // }
         })
     }, [])
     return (
-        <div className="custom-select">
+        <div ref={ref} className="custom-select" onClick={onSelectComponentClick}>
             <div className="custom-select__inner">
-                <input type="text" placeholder={placeholder} readOnly={true} value={value} onFocus={onFocus} className={classNames("custom-select__input", { "is-hover": openSelect })} />
+                <input type="text" placeholder={placeholder} readOnly={true} value={currentValue} onFocus={onFocus} className={classNames("custom-select__input", { "is-hover": openSelect })} />
                 <span className="custom-select__suffix">
                     <i className="custom-select__icon fa fa-angle-down" aria-hidden="true"></i>
                 </span>
             </div>
-            <ul className="custom-select__dropdown" style={{ display: openSelect ? 'block': 'none' }}>
+            <ul className={classNames("custom-select__dropdown", { "is-hidden": !openSelect })} style={{ display: openSelect ? 'block': 'none' }}>
                 {
                     options.map((option, index) => {
                         return (

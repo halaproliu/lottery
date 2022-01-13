@@ -8,6 +8,7 @@ function Setting () {
   let [ winnerUsers, setWinnerUsers ] = useState([])
   let [ selectUsers, setSelectUsers ] = useState([])
   let [ title, setTitle ] = useState('')
+  let [ user, setUser ] = useState('')
   let selectUser = []
   const initData = async () => {
     const { winnerUsers } = await LotteryApi.getData()
@@ -20,23 +21,24 @@ function Setting () {
   }
 
   const getSelectUsers = (title) => {
+    console.log(title)
     let prize = getSelectedPrize(title)
+    console.log(prize)
     let key = `${prize.type}-${prize.subType}`
     let users = (winnerUsers[key] || [])
     setSelectUsers([...users])
   }
 
   const onChange = (val) => {
-    console.log(val)
-    let title = val
-    setTitle(title)
-    getSelectUsers(title)
+    setTitle(val)
+    getSelectUsers(val)
+    setUser(() => '')
+    console.log(user)
   }
   
   const onSelectUser = (val) => {
-    console.log(val)
+    setUser(() => val)
     selectUser = selectUsers.find(item => item[2] === val)
-    console.log(selectUser)
   }
 
   const onSubmit = async () => {
@@ -56,8 +58,8 @@ function Setting () {
   
   return (
     <div className="setting-box">
-      <MySelect options={prizeList} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
-      <MySelect options={selectUsers} labelKey="2" valueKey="2" idKey="2" onChange={onSelectUser}></MySelect>
+      <MySelect currentValue={title} options={prizeList} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
+      <MySelect currentValue={user} options={selectUsers} labelKey="2" valueKey="2" idKey="2" onChange={onSelectUser}></MySelect>
       <button style={{ marginTop: "20px" }} className="btn btn-primary" onClick={onSubmit}>移除中奖</button>
     </div>
   )
