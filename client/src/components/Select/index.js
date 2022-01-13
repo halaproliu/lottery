@@ -19,10 +19,14 @@ function MySelect (props) {
         typeof onChange === 'function' && onChange(val, index)
     }
 
-    const onFocus = (e) => {
+    const onInputClick = (e) => {
         // 阻止冒泡
         e.nativeEvent.stopImmediatePropagation()
-        setOpenSelect(true)
+        if (!openSelect) {
+            setOpenSelect(true)
+        } else {
+            setOpenSelect(false)
+        }
     }
 
     const onMouseEnter = (index) => {
@@ -53,12 +57,12 @@ function MySelect (props) {
     return (
         <div ref={ref} className="custom-select" onClick={onSelectComponentClick}>
             <div className="custom-select__inner">
-                <input type="text" placeholder={placeholder} readOnly={true} value={currentValue} onFocus={onFocus} className={classNames("custom-select__input", { "is-hover": openSelect })} />
+                <input type="text" placeholder={placeholder} readOnly={true} value={currentValue} onClick={onInputClick} className={classNames("custom-select__input", { "is-hover": openSelect })} />
                 <span className="custom-select__suffix">
-                    <i className="custom-select__icon fa fa-angle-down" aria-hidden="true"></i>
+                    <i className={classNames("custom-select__icon fa", { "fa-angle-down": !openSelect, "fa-angle-up": openSelect })} aria-hidden="true"></i>
                 </span>
             </div>
-            <ul className={classNames("custom-select__dropdown", { "is-hidden": !openSelect })} style={{ display: openSelect ? 'block': 'none' }}>
+            <ul className={classNames("custom-select__dropdown", { "is-hidden": !openSelect })}>
                 {
                     options.map((option, index) => {
                         return (
@@ -68,6 +72,7 @@ function MySelect (props) {
                         )
                     })
                 }
+                <div className="custom-select__arrow"></div>
             </ul>
         </div>
     )

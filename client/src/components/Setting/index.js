@@ -21,9 +21,7 @@ function Setting () {
   }
 
   const getSelectUsers = (title) => {
-    console.log(title)
     let prize = getSelectedPrize(title)
-    console.log(prize)
     let key = `${prize.type}-${prize.subType}`
     let users = (winnerUsers[key] || [])
     setSelectUsers([...users])
@@ -33,7 +31,6 @@ function Setting () {
     setTitle(val)
     getSelectUsers(val)
     setUser(() => '')
-    console.log(user)
   }
   
   const onSelectUser = (val) => {
