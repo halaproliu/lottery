@@ -322,7 +322,6 @@ function Main (props) {
             } else {
                 currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
             }
-            console.log(currPrizeCount)
             let leftCount = remainUsers.length // 剩余抽奖个数
             for (let i = 0; i < currPrizeCount; i++) {
                 let selectedId = random(leftCount) // 选中的人下标
