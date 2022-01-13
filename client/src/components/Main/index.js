@@ -49,7 +49,7 @@ function Main (props) {
     let getCurrentPrize = props.getCurrentPrize
     let isHighlight
     let resolution = 1 // 分辨率
-    let rotateTime = 3000 // 旋转时间
+    let rotateTime = 10000 // 旋转时间
     let index = 0
     let len = users && users.length
     let showTable = users.length === remainUsers.length

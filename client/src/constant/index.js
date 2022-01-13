@@ -6,7 +6,7 @@
  * @param title 奖品名称
  * @param img 奖品图片（放置在client/public/img文件夹）
  */
-export const prizeList = [{
+ export const prizeList = [{
   type: 0,
   subType: 0,
   count: 1,
@@ -46,11 +46,17 @@ export const prizeList = [{
   type: 2,
   subType: 2,
   count: 1,
+  title: 'switch oled游戏主机',
+  img: './img/switch.png'
+}, {
+  type: 2,
+  subType: 3,
+  count: 1,
   title: '坚果p3s投影仪',
   img: './img/p3s.jpeg'
 }, {
   type: 2,
-  subType: 3,
+  subType: 4,
   count: 1,
   title: 'gopro hero9 black',
   img: './img/gopro.png'
@@ -67,51 +73,57 @@ export const prizeList = [{
   title: 'airpods pro',
   img: './img/airpodsPro.png'
 }, {
-  type: 4,
-  subType: 0,
-  count: 4,
-  title: 'cherry mx3.0s g80-3870lyaeu-2 机械键盘',
+  type: 3,
+  subType: 2,
+  count: 1,
+  title: 'cherry键盘 mx8.0 g80-3888 黑轴',
   img: './img/keyboard.png'
 }, {
   type: 4,
-  subType: 1,
+  subType: 0,
   count: 5,
   title: '小熊多功能锅',
   img: './img/xiaoxiong.png'
 }, {
   type: 4,
-  subType: 2,
-  count: 2,
-  title: 'aca电烤箱',
-  img: './img/dkx.png'
+  subType: 1,
+  count: 4,
+  title: 'cherry mx3.0s g80-3870lyaeu-2 机械键盘',
+  img: './img/keyboard.png'
 }, {
   type: 4,
-  subType: 3,
+  subType: 2,
   count: 4,
   title: '惠普 dj2720 打印机',
   img: './img/print.jpeg'
 }, {
   type: 4,
-  subType: 4,
+  subType: 3,
   count: 4,
   title: '摩飞加湿器4l',
   img: './img/jiashiqi.jpg'
 }, {
   type: 4,
-  subType: 5,
+  subType: 4,
   count: 2,
   title: 'skg按摩腰带',
   img: './img/massage.jpeg'
 }, {
   type: 4,
-  subType: 6,
+  subType: 5,
   count: 2,
   title: 'aca空气炸锅',
   img: './img/kqzg.png'
 }, {
   type: 4,
-  subType: 7,
+  subType: 6,
   count: 2,
   title: '小米小爱音箱pro8',
   img: './img/xiaoai.png'
+}, {
+  type: 4,
+  subType: 8,
+  count: 2,
+  title: 'aca电烤箱',
+  img: './img/dkx.png'
 }]
