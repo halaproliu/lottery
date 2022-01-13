@@ -31,6 +31,10 @@ function Setting () {
     setTitle(title)
     getSelectUsers(title)
   }
+  
+  const onSelectUser = (val) => {
+    console.log(val)
+  }
 
   const onSubmit = () => {
     let prize = getSelectedPrize(title)
@@ -49,17 +53,8 @@ function Setting () {
   return (
     <div className="setting-box">
       <MySelect options={prizeList} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
-      <select className="prize-list__select">
-        <option value="">请选择</option>
-        {
-          selectUsers.map(user => {
-            return (
-              <option value={user[0]} key={user[0]}>{ user[1] }</option>
-            )
-          })
-        }
-      </select>
-      <button className="btn btn-primary" onClick={onSubmit}>移除中奖</button>
+      <MySelect options={selectUsers} labelKey="2" valueKey="2" idKey="2" onChange={onSelectUser}></MySelect>
+      <button style={{ marginTop: "20px" }} className="btn btn-primary" onClick={onSubmit}>移除中奖</button>
     </div>
   )
 }

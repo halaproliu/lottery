@@ -35,10 +35,9 @@ function MySelect (props) {
             const classList = e.target.classList
             console.log(classList)
             const classes = ['dropdown-item', 'custom-select__input', 'custom-select__dropdown', 'custom-select__inner', 'custom-select__suffix', 'custom-select__icon']
-            // const isContains = classList.contains('dropdown-item') || classList.contains('custom-select__dropdown') || classList.contains('custom-select__inner')
             let isContains = classes.reduce((prev, next) => {
-                return classList.contains(prev) || classList.contains(next)
-            })
+                return prev || classList.contains(next)
+            }, false)
             if (!isContains) {
                 setOpenSelect(false)
             }
