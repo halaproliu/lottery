@@ -26,14 +26,12 @@ function MySelect (props) {
     }
 
     const onMouseEnter = (index) => {
-        console.log()
         setHoverIndex(index)
     }
 
     useEffect(() => {
         document.addEventListener('click', (e) => {
             const classList = e.target.classList
-            console.log(classList)
             const classes = ['dropdown-item', 'custom-select__input', 'custom-select__dropdown', 'custom-select__inner', 'custom-select__suffix', 'custom-select__icon']
             let isContains = classes.reduce((prev, next) => {
                 return prev || classList.contains(next)

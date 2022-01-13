@@ -8,6 +8,7 @@ function Setting () {
   let [ winnerUsers, setWinnerUsers ] = useState([])
   let [ selectUsers, setSelectUsers ] = useState([])
   let [ title, setTitle ] = useState('')
+  let selectUser = []
   const initData = async () => {
     const { winnerUsers } = await LotteryApi.getData()
     setWinnerUsers(winnerUsers)
@@ -34,15 +35,18 @@ function Setting () {
   
   const onSelectUser = (val) => {
     console.log(val)
+    selectUser = selectUsers.find(item => item[2] === val)
+    console.log(selectUser)
   }
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     let prize = getSelectedPrize(title)
-    LotteryApi.removeNotArrivedUser({
+    await LotteryApi.removeNotArrivedUser({
       type: prize.type,
       subType: prize.subType,
-      user: selectUsers[0]
+      user: selectUser
     })
+    alert('移除中奖人员成功')
   }
 
   useEffect(() => {
