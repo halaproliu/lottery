@@ -5,19 +5,46 @@ import { writeXML } from '../utils/xml'
 import config from '../config'
 import { getUserData, getWinnerData, getNotArriveWinnersData, getRemainData, resetData, saveFileData } from '../service/Lottery'
 import { prizeList } from '../config/prize'
+import * as User from '../service/User'
 @Controller({
   prefix: '/api'
 })
 class Lottery {
   @Request({
+    url: '/saveAllUsers',
+    method: RequestMethod.POST
+  })
+  async saveAllUsers (ctx) {
+    let users = getUserData()
+    let results = []
+    for (let i = 0; i < users.length; i++) {
+      let obj = {
+        code: users[i][0],
+        username: users[i][1],
+        nickName: users[i][2]
+      }
+      results.push(obj)
+    }
+    await User.saveAllUser(ctx, results)
+  }
+
+  @Request({
     url: '/getUsers',
     method: RequestMethod.GET
   })
-  getUsers (ctx) {
-    let users = getUserData()
-    ctx.body = genSuccessResponse({
-      users
-    })
+  async getUsers (ctx) {
+    try {
+      let users = await User.getAllUser()
+      let data = users.map(user => {
+        return [user.code, user.username, user.nickName]
+      })
+      ctx.body = genSuccessResponse({ users: data })
+    } catch (e) {
+      ctx.body = {
+        code: 500,
+        data: e
+      }
+    }
   }
 
   @Request({

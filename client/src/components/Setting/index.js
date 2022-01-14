@@ -79,6 +79,10 @@ function Setting () {
     alert('移除中奖人员成功')
   }
 
+  const saveAllUsers = () => {
+    LotteryApi.saveAllUsers()
+  }
+
   useEffect(() => {
     initData()
     getSelectUsers(prizeList[0].title)
@@ -93,6 +97,7 @@ function Setting () {
       <MySelect currentValue={title} options={prizes} labelKey="title" valueKey="title" idKey="title" onChange={onChange}></MySelect>
       <MySelect currentValue={user} options={selectUsers} labelKey="2" valueKey="2" idKey="2" onChange={onSelectUser}></MySelect>
       <button style={{ marginTop: "20px" }} className="btn btn-primary" onClick={onSubmit}>移除中奖</button>
+      <button style={{ marginTop: "20px" }} className="btn btn-primary" onClick={saveAllUsers}>导入用户</button>
     </div>
   )
 }
