@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux'
-import lottery from './lottery'
+import main from './main'
+// import lottery from './lottery'
+import lotterys from './lotterys'
 
 export default combineReducers({
-  lottery
+  main,
+  // lottery,
+  lotterys
 })

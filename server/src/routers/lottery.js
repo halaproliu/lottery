@@ -3,105 +3,21 @@ import { Controller, Request, RequestMethod } from '../utils/decorator'
 import { genSuccessResponse } from '../utils/modelUtils'
 import { writeXML } from '../utils/xml'
 import config from '../config'
-import { getUserData, getWinnerData, getNotArriveWinnersData, getRemainData, resetData, saveFileData } from '../service/Lottery'
+import * as LotteryService from '../service/Lottery'
 import { prizeList } from '../config/prize'
-import * as User from '../service/User'
+import WinnerModel from '@/models/winnerModel'
+import WinsNotArriveModel from '@/models/winsNotArriveModel'
 @Controller({
   prefix: '/api'
 })
 class Lottery {
   @Request({
-    url: '/saveAllUsers',
-    method: RequestMethod.POST
-  })
-  async saveAllUsers (ctx) {
-    let users = getUserData()
-    let results = []
-    for (let i = 0; i < users.length; i++) {
-      let obj = {
-        code: users[i][0],
-        username: users[i][1],
-        nickName: users[i][2]
-      }
-      results.push(obj)
-    }
-    await User.saveAllUser(ctx, results)
-  }
-
-  @Request({
-    url: '/getUsers',
-    method: RequestMethod.GET
-  })
-  async getUsers (ctx) {
-    try {
-      let users = await User.getAllUser()
-      let data = users.map(user => {
-        return [user.code, user.username, user.nickName]
-      })
-      ctx.body = genSuccessResponse({ users: data })
-    } catch (e) {
-      ctx.body = {
-        code: 500,
-        data: e
-      }
-    }
-  }
-
-  @Request({
     url: '/getData',
     method: RequestMethod.GET
   })
-  getData (ctx) {
-    let remainUsers = getRemainData()
-    let winnerUsers = getWinnerData()
-    ctx.body = genSuccessResponse({
-      winnerUsers,
-      remainUsers
-    })
-  }
-
-  @Request({
-    url: '/saveData',
-    method: RequestMethod.POST
-  })
-  saveData (ctx) {
-    let params = ctx.request.body
-    let type = params.type
-    let subType = params.subType
-    let data = params.data
-    let index = `${type}-${subType}`
-    let winners = getWinnerData() || {}
-    if (winners[index]) {
-      winners[index].push.apply(winners[index], data)
-    } else {
-      winners[index] = Array.isArray(data) ? data : [data]
-    }
-    saveFileData(winners, 1)
-    ctx.body = genSuccessResponse({
-      msg: '保存奖品数据成功'
-    })
-  }
-
-  @Request({
-    url: '/saveNotArriveWinnerData',
-    method: RequestMethod.POST
-  })
-  saveNotArriveWinnerData (ctx) {
-    let params = ctx.request.body
-    let type = params.type
-    let subType = params.subType
-    let data = params.data
-    let index = `${type}-${subType}`
-    let winners = getNotArriveWinnersData() || {}
-    if (winners[index]) {
-      winners[index].push.apply(winners[index], data)
-    } else {
-      winners[index] = Array.isArray(data) ? data : [data]
-    }
-    saveFileData(winners, 2)
-    ctx.body = genSuccessResponse({
-      msg: '保存未到场人员奖品数据成功'
-    })
+  async getData (ctx) {
+    let data = await LotteryService.getData()
+    ctx.body = genSuccessResponse(data)
   }
 
   @Request({
@@ -150,8 +66,9 @@ class Lottery {
     url: '/reset',
     method: RequestMethod.POST
   })
-  reset (ctx) {
-    resetData()
+  async reset (ctx) {
+    await WinnerModel.remove({}).exec()
+    await WinsNotArriveModel.remove({}).exec()
     ctx.body = genSuccessResponse()
   }
 

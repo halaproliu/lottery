@@ -2,7 +2,9 @@ const mongoose = require('mongoose')
 const baseModel = require('./baseModel')
 const Schema = mongoose.Schema
 
-let WinSchema = new Schema({
+delete mongoose.connection.models['Winner']
+
+let WinnerSchema = new Schema({
   id: String,
   code: Number,
   username: String,
@@ -10,6 +12,7 @@ let WinSchema = new Schema({
   prizeName: String,
   type: Number,
   subType: Number,
+  title: String,
   createAt: {
     type: Date,
     default: Date.now()
@@ -18,10 +21,13 @@ let WinSchema = new Schema({
     type: Date,
     default: Date.now()
   }
+}, {
+  versionKey: false,
+  timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' }
 })
 
-let Win = mongoose.model('Win', WinSchema)
+let Winner = mongoose.model('Winner', WinnerSchema)
 
-WinSchema.plugin(baseModel)
+WinnerSchema.plugin(baseModel)
 
-module.exports = Win
+module.exports = Winner

@@ -22,7 +22,7 @@ function Lottery () {
     const selected = useSelector(state => state.lottery.selected)
     const initData = async () => {
         const { winnerUsers, remainUsers } = await LotteryApi.getData()
-        const { users } = await LotteryApi.getUsers()
+        const { users } = await LotteryApi.getAllUsers()
         setUsers(users)
         setWinnerUsers(winnerUsers)
         setRemainUsers(remainUsers)

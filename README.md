@@ -57,3 +57,11 @@ npm start
 cd server
 npm run dev
 ```
+
+### 配置数据导入mongodb
+
+- 导入奖品列表
+
+```sh
+mongoimport -h 127.0.0.1:27017 -d lottery -c prizes --file data/prizes.json
+```

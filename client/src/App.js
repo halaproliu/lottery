@@ -1,8 +1,22 @@
-import React from 'react'
-// import Lottery from '@/components/Lottery'
+import React, { useState, useEffect } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
-import routes from './routes'
+import routes from '@/routes'
+import Container from '@/components/Container'
+
+
 function App() {
+  const [ state, setState ] = useState(window.location.href)
+
+  useEffect(() => {
+    setState(window.location.href)
+  }, [state])
+  if (state.indexOf('/lottery') === -1) {
+    return (
+      <HashRouter>
+        <Container></Container>
+      </HashRouter>
+    )
+  }
   return (
     <HashRouter>
       <Routes>

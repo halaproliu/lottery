@@ -1,4 +1,5 @@
 import path from 'path'
+import 'module-alias/register'
 import Koa from 'koa'
 import logger from 'koa-logger'
 import bodyParser from 'koa-bodyparser'
@@ -18,9 +19,9 @@ const app = new Koa()
 const port = config.port || '3000' // 端口号
 
 if (config.useMongo) {
-    mongoose.set('useFindAndModify', false)
-    mongoose.set('useCreateIndex', true)
-    mongoose.set('useNewUrlParser', true)
+    // mongoose.set('useFindAndModify', false)
+    // mongoose.set('useCreateIndex', true)
+    // mongoose.set('useNewUrlParser', true)
     mongoose.connect(config.db.url) // 连接mongo
 }
 

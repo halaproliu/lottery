@@ -262,7 +262,6 @@ function Main (props) {
     }
 
     const getEachLotteryCount = (selectedCurr, selectedIndexCurr) => {
-        console.log(winnerUsers)
         let eachCount = EACH_COUNT[selectedIndexCurr.current]
         let index = `${selectedCurr.current.type}-${selectedCurr.current.subType}`
         let currLeft = prizeList[selectedIndexCurr.current].count - (winnerUsers[index] || []).length
@@ -316,8 +315,6 @@ function Main (props) {
             dispatch({ type: actions.CLEAR_SELECTED_CARD_INDEX }) // 选中名牌置空
             let currPrizeCount
             if (isRelottery) {
-                console.log(preSelectedCurr, preSelectedIndexCurr)
-                console.log(selectedCurr, selectedIndexCurr)
                 currPrizeCount = getEachLotteryCount(preSelectedCurr, preSelectedIndexCurr)
             } else {
                 currPrizeCount = getEachLotteryCount(selectedCurr, selectedIndexCurr)
@@ -335,10 +332,6 @@ function Main (props) {
                 dispatch({ type: actions.SET_SELECTED_CARD_INDEX, payload: cardIndex })
             }
             selectCard()
-            // if (!isRelottery) {
-            //     setCurrWinnerUsers()
-            //     getCurrentPrize()
-            // }
             setCurrWinnerUsers()
             getCurrentPrize()
             if (!isStillHasPrize()) {

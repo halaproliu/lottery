@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true // 解决decorator报错，下波浪线
+    "experimentalDecorators": true, // 解决decorator报错，下波浪线
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
   }
 }

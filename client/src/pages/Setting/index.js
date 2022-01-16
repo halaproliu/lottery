@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { prizeList } from '@/constant'
 import './index.styl'
 import * as LotteryApi from '@/api/lottery'
-import MySelect from '../Select'
+import MySelect from '@/components/Select'
 
 function Setting () {
   let [ winnerUsers, setWinnerUsers ] = useState({})

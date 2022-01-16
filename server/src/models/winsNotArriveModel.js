@@ -1,15 +1,17 @@
 const mongoose = require('mongoose')
 const baseModel = require('./baseModel')
 const Schema = mongoose.Schema
-const Models = mongoose.Models
 
-delete mongoose.connection.models['User']
+delete mongoose.connection.models['WinNotArrive']
 
-let UserSchema = new Schema({
+let WinNotArriveSchema = new Schema({
   id: String,
   code: Number,
   username: String,
-  nickName: String,
+  prizeName: String,
+  type: Number,
+  subType: Number,
+  title: String,
   createAt: {
     type: Date,
     default: Date.now()
@@ -23,8 +25,8 @@ let UserSchema = new Schema({
   timestamps: { createdAt: 'createAt', updatedAt: 'updateAt' }
 })
 
-let User = mongoose.model('User', UserSchema)
+let WinNotArrive = mongoose.model('WinNotArrive', WinNotArriveSchema)
 
-UserSchema.plugin(baseModel)
+WinNotArriveSchema.plugin(baseModel)
 
-module.exports = User
+module.exports = mongoose.models.WinNotArrive ? mongoose.models.WinNotArrive : WinNotArrive

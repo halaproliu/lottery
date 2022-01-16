@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import './index.styl';
+import 'antd/dist/antd.css'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import reducer from './reducers'
@@ -10,11 +11,11 @@ import reducer from './reducers'
 let store = createStore(reducer);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 
