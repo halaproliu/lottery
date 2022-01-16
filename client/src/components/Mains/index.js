@@ -59,7 +59,7 @@ const Main = () => {
     }
     
     useEffect(() => {
-        if (users.length) {
+        if (users.length && remainUsers.length && selected && selectedIndex) {
             const basicData = { users, winnerUsers, remainUsers, selected, selectedIndex }
             const fns = { setShowLottery, showBubble, dispatch }
             lotteryInstance.current = new Lottery(containerRef, basicData, fns)
@@ -69,7 +69,7 @@ const Main = () => {
                 window.removeEventListener('resize', lotteryInstance.current.onWindowResize, false)
             }
         }
-    }, [users, winnerUsers, remainUsers])
+    }, [users, winnerUsers, remainUsers, selected, selectedIndex])
 
     return (
         <>

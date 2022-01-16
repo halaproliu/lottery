@@ -164,6 +164,85 @@ class Lottery {
         card.innerHTML = `<div class="company">${COMPANY}</div><div class="name">${user.nickName}</div><div class="details">${user.code}<br/>${user.username || 'PSST'}</div>`
     }
 
+    selectCard (duration = 600) {
+        let width = 140
+        let tag = -(this.selectedUsers.length - 1) / 2
+        let users = this.selectedUsers.map(item => item.nickName) // 选中用户名字列表
+        this.showBubble('congratulation', {
+            user: users.join('、'),
+            prize: this.selected.title,
+            year: YEAR
+        })
+        
+        this.selectedCardIndex.forEach((cardIndex, index) => {
+            this.changeCard(cardIndex, this.selectedUsers[index])
+            let object = this.threeDCards[cardIndex]
+            new TWEEN.Tween(object.position).to({
+                x: tag * width * this.resolution,
+                y: 50 * this.resolution,
+                z: 2200
+            }, Math.random() * duration + duration)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+
+            new TWEEN.Tween(object.rotation).to({
+                x: 0,
+                y: 0,
+                z: 0
+            }, Math.random() * duration + duration)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+            object.element.classList.add('prize')
+            tag++
+        })
+
+        new TWEEN.Tween(this)
+            .to({}, duration * 2)
+            .onUpdate(this.render)
+            .start()
+            .onComplete(() => {
+                // 动画结束后可以操作
+                this.isLottery = false
+            })
+    }
+
+    resetCard (duration = 500) {
+        if (this.selectedUsers.length === 0) {
+            return Promise.resolve()
+        }
+        this.selectedCardIndex.forEach((index) => {
+            let object = this.threeDCards[index]
+            let target = this.sphere[index]
+            new TWEEN.Tween(object.position).to({
+                x: target.position.x,
+                y: target.position.y,
+                z: target.position.z
+            }, Math.random() * duration + duration)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+            new TWEEN.Tween(object.rotation).to({
+                x: target.rotation.x,
+                y: target.rotation.y,
+                z: target.rotation.z
+            }, Math.random() * duration + duration)
+            .easing(TWEEN.Easing.Exponential.InOut)
+            .start()
+        })
+        return new Promise((resolve) => {
+            new TWEEN.Tween(this)
+                .to({}, duration * 2)
+                .onUpdate(this.render)
+                .start()
+                .onComplete(() => {
+                    this.selectedCardIndex.forEach((index) => {
+                        let object = this.threeDCards[index]
+                        object.element.classList.remove('prize')
+                    })
+                    resolve()
+                })
+        })
+    }
+
     shineCard () {
         let maxCard = 15
         let maxUser = this.basicData.remainUsers.length
@@ -287,6 +366,7 @@ class Lottery {
 
     async saveData () {
         const { type, subType, title } = this.selected
+        console.log(this.selectedUsers)
         let opts = {
             users: this.selectedUsers,
             type,
@@ -302,8 +382,10 @@ class Lottery {
         this.selectedUsers = []
         let currPrizeCount = this.getEachCount()
         let leftCount = this.remainUsers.length // 剩余抽奖个数
+        console.log(leftCount)
         for (let i = 0; i < currPrizeCount; i++) {
             let selectedId = this.random(leftCount)
+            console.log(selectedId)
             this.selectedUsers.push(this.remainUsers.splice(selectedId, 1)[0])
             this.dispatch(this.setRemainUsers(this.remainUsers))
             leftCount--
@@ -332,7 +414,7 @@ class Lottery {
         this.switchScreen('lottery')
     }
 
-    goLottery () {
+    async goLottery () {
         if (this.isLottery) {
             this.showBubble('wait')
             return
@@ -341,10 +423,9 @@ class Lottery {
             return this.showBubble('finish')
         }
         this.isLottery = true
-        saveData()
-        resetCard().then(_ => {
-            lottery()
-        })
+        this.saveData()
+        await this.resetCard()
+        this.lottery()
     }
 }
 
