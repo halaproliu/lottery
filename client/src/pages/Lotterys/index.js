@@ -63,7 +63,7 @@ const Lottery = () => {
                     <Prize prizes={prizes} winnerUsers={winnerUsers} />
                 )
             }
-            <Main />
+            <Main getCurrentPrize={getCurrentPrize} />
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import initHightlightCell from '@/libs/initHighlightCell'
 import { ROW_COUNT, COLUMN_COUNT, COMPANY, YEAR } from '@/constant/prize'
 import * as WinnerUserApi from '@/api/winnerUser'
-import { setRemainUsers, setWinnerUsers, removeWinnerUsers } from '@/reducers/actions'
+import { setRemainUsers, setWinnerUsers, removeWinnerUsers, setPreSelected } from '@/reducers/actions'
 
 class Lottery {
     constructor (container, basicData, fns) {
@@ -20,6 +20,7 @@ class Lottery {
         this.selectedIndex = basicData.selectedIndex
         this.setShowLottery = fns.setShowLottery
         this.showBubble = fns.showBubble
+        this.getCurrentPrize = fns.getCurrentPrize
         this.dispatch = fns.dispatch
         this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
         this.table = []
@@ -361,6 +362,7 @@ class Lottery {
     getEachCount () {
         let eachCount = this.selected.eachCount
         let currPrizeTotalCount = this.selected.count
+        console.log(this.selectedIndex, this.selected)
         let currPrizeCount = currPrizeTotalCount - this.getCurrentWinners(this.selected).length
         console.log(eachCount, currPrizeTotalCount, currPrizeCount)
         currPrizeCount = currPrizeCount > eachCount ? eachCount : currPrizeCount
@@ -432,8 +434,10 @@ class Lottery {
         if (!this.isStillHasPrize()) {
             return this.showBubble('finish')
         }
+        this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         this.isLottery = true
         // this.saveData()
+        this.getCurrentPrize()
         await this.resetCard()
         this.lottery()
     }

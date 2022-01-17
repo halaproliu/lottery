@@ -41,6 +41,7 @@ const WinnerUsers = () => {
         title: '奖品名称',
         dataIndex: 'title',
         key: 'title',
+        width: 120,
         render: text => <span style={{ color: '#409eff' }}>{text}</span>
     }, {
         title: '奖品等级',
@@ -52,14 +53,14 @@ const WinnerUsers = () => {
         title: '创建时间',
         dataIndex: 'createAt',
         key: 'createAt',
-        render: time => formatDate(new Date(time), 'yyyy-MM-dd hh:mm:ss'),
-        width: 170
+        render: time => formatDate(new Date(time), 'yyyy-MM-dd'),
+        width: 120
     }, {
         title: '修改时间',
         dataIndex: 'updateAt',
         key: 'updateAt',
-        render: time => formatDate(new Date(time), 'yyyy-MM-dd hh:mm:ss'),
-        width: 170
+        render: time => formatDate(new Date(time), 'yyyy-MM-dd'),
+        width: 120
     }, {
         title: '操作',
         dataIndex: '',

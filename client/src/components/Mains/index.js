@@ -5,7 +5,8 @@ import Lottery from '@/libs/lottery'
 import { useSelector, useDispatch } from 'react-redux'
 import './index.styl'
 
-const Main = () => {
+const Main = (props) => {
+    const getCurrentPrize = props.getCurrentPrize
     const containerRef = useRef(null)
     const lotteryInstance = useRef(null)
     const [ showLottey, setShowLottery ] = useState(false)
@@ -61,9 +62,11 @@ const Main = () => {
     useEffect(() => {
         if (users.length && remainUsers.length && selected && selectedIndex) {
             const basicData = { users, winnerUsers, remainUsers, selected, selectedIndex }
-            const fns = { setShowLottery, showBubble, dispatch }
-            lotteryInstance.current = new Lottery(containerRef, basicData, fns)
-            lotteryInstance.current.init()
+            const fns = { setShowLottery, showBubble, getCurrentPrize, dispatch }
+            if (!lotteryInstance.current) {
+                lotteryInstance.current = new Lottery(containerRef, basicData, fns)
+                lotteryInstance.current.init()
+            }
             const onWindowResize = () => {
                 lotteryInstance.current.onWindowResize()
             }

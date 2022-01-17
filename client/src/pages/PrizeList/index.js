@@ -32,17 +32,16 @@ const PrizeList = () => {
         title: '奖品总数(个)',
         dataIndex: 'count',
         key: 'count',
-        width: 120
+        width: 100
     }, {
         title: '抽取个数(个)',
         dataIndex: 'eachCount',
         key: 'eachCount',
-        width: 120
+        width: 100
     }, {
         title: '奖品图片',
         dataIndex: 'img',
         key: 'img',
-        width: 120,
         render: img => {
             return (
                 <Image width={40} height={40} src={img}></Image>

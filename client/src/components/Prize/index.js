@@ -8,13 +8,15 @@ function Prize () {
   const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
   const selected = useSelector(state => state.lotterys.selected)
   const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
+  const preSelected = useSelector(state => state.lotterys.preSelected)
+  const preSelectedIndex = useSelector(state => state.lotterys.preSelectedIndex)
   let [ currCount, setCurrCount ] = useState(0)
   const getCurrentWinners = (obj) => {
     return winnerUsers.filter(user => user.type === obj.type && user.title === obj.title) || []
   }
   useEffect(() => {
     if (prizes.length && selected) {
-      setCurrCount(selected.count - getCurrentWinners(selected).length)
+      setCurrCount(preSelected.count - getCurrentWinners(selected).length)
     }
   }, [selectedIndex, selected, winnerUsers, prizes])
   return (
@@ -36,7 +38,7 @@ function Prize () {
             let barWidth = `${(leftCount / prize.count) * 100}%`
             return (
               isShow && (
-                <li className={classnames('lottery-prizeBar__item', {'shine': selectedIndex === index})} key={key}>
+                <li className={classnames('lottery-prizeBar__item', {'shine': preSelectedIndex === index})} key={key}>
                   <div className="lottery-prizeBar__img">
                     <img src={prize.img} alt={prize.title} />
                   </div>

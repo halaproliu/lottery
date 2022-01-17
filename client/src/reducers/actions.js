@@ -13,6 +13,12 @@ export const initData = (payload) => {
         payload
     }
 }
+export const setPreSelected = (payload) => {
+    return {
+        type: 'SET_PRESELECTED',
+        payload
+    }
+}
 export const setSelected = (payload) => {
     return {
         type: 'SET_SELECTED',
