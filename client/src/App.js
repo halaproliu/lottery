@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import routes from '@/routes'
 import Container from '@/components/Container'
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/lib/locale/zh_CN'
 
 
 function App() {
   const [ state, setState ] = useState(window.location.href)
+  const [ locale ] = useState(zhCN)
 
   useEffect(() => {
     setState(window.location.href)
@@ -13,7 +16,9 @@ function App() {
   if (state.indexOf('/lottery') === -1) {
     return (
       <HashRouter>
-        <Container></Container>
+        <ConfigProvider locale={locale}>
+          <Container></Container>
+        </ConfigProvider>
       </HashRouter>
     )
   }

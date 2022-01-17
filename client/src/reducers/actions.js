@@ -27,6 +27,12 @@ export const setWinnerUsers = (payload) => {
     }
 }
 
+export const removeWinnerUsers = () => {
+    return {
+        type: 'REMOVE_WINNERUSERS'
+    }
+}
+
 export const setRemainUsers = (payload) => {
     return {
         type: 'SET_REMAINUSERS',

@@ -28,7 +28,7 @@ api.interceptors.response.use(
     if (res.status === 200) {
       let { data = {} } = res
       if (data.code === 200) {
-        return data.data || {}
+        return data.data
       } else {
         return res
       }
@@ -37,6 +37,7 @@ api.interceptors.response.use(
     }
   },
   err => {
+    console.log(err)
     if (!err.response) {
       return Promise.reject(err)
     }

@@ -23,7 +23,7 @@ const Lottery = () => {
     }
 
     const getCurrentWinners = (obj) => {
-        return winnerUsers.filter(user => user.type === obj.type && user.subType === obj.subType) || []
+        return winnerUsers.filter(user => user.type === obj.type && user.title === obj.title) || []
     }
 
     const getCurrentPrize = () => {
@@ -45,6 +45,7 @@ const Lottery = () => {
     useEffect(() => {
         init()
         document.body.style.backgroundColor = 'linear-gradient(to bottom, #131313 0%, #02101c 100%)'
+        document.title = '抽奖'
     }, [])
 
     useEffect(() => {
@@ -63,14 +64,6 @@ const Lottery = () => {
                 )
             }
             <Main />
-            {/* {
-                users.length > 0 && remainUsers.length > 0 && (
-                    <Main
-                        users={users}
-                        winnerUsers={winnerUsers}
-                        remainUsers={remainUsers} />
-                )
-            } */}
         </div>
     )
 }

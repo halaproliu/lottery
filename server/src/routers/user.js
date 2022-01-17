@@ -25,12 +25,26 @@ class User {
         ctx.body = genSuccessResponse(data)
     }
 
+
+
     @Request({
         url: '/getAllUsers',
         method: RequestMethod.GET
     })
     async getAllUsers (ctx) {
         let data = await UserModel.find({}).sort({ code: 1 }).exec()
+        ctx.body = genSuccessResponse(data)
+    }
+
+
+    @Request({
+        url: '/getUserByParams',
+        method: RequestMethod.POST
+    })
+    async getUserByParams (ctx) {
+        let params = ctx.request.body
+        let res = await UserModel.find(params)
+        let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }
 

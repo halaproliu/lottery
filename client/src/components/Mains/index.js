@@ -31,13 +31,8 @@ const Main = () => {
         }, 4000)
     }
 
-    const toShowLottery = () => {
-        // setShowLottery(true)
-        // lotteryInstance.current.removeHighlight()
-        // showBubble('enter', {
-        //     prize: selected.title
-        // })
-        // lotteryInstance.current.switchScreen('lottery')
+    const toShowLottery = (e) => {
+        e.stopPropagation()
         lotteryInstance.current.toShowLottery()
     }
 
@@ -57,6 +52,11 @@ const Main = () => {
         e.stopPropagation()
         lotteryInstance.current.resetData()
     }
+
+    const saveData = (e) => {
+        e.stopPropagation()
+        lotteryInstance.current.saveData()
+    }
     
     useEffect(() => {
         if (users.length && remainUsers.length && selected && selectedIndex) {
@@ -64,9 +64,12 @@ const Main = () => {
             const fns = { setShowLottery, showBubble, dispatch }
             lotteryInstance.current = new Lottery(containerRef, basicData, fns)
             lotteryInstance.current.init()
-            window.addEventListener('resize', lotteryInstance.current.onWindowResize, false)
+            const onWindowResize = () => {
+                lotteryInstance.current.onWindowResize()
+            }
+            window.addEventListener('resize', onWindowResize, false)
             return () => {
-                window.removeEventListener('resize', lotteryInstance.current.onWindowResize, false)
+                window.removeEventListener('resize', onWindowResize, false)
             }
         }
     }, [users, winnerUsers, remainUsers, selected, selectedIndex])
@@ -84,6 +87,7 @@ const Main = () => {
                     <div>
                         <button className="btn" onClick={goLottery}>抽奖</button>
                         <button className="btn" onClick={reLottery}>重新抽奖</button>
+                        <button className="btn" onClick={saveData}>保存数据</button>
                         <button className="btn" onClick={exportResult}>导出抽奖结果</button>
                         <button className="btn" onClick={resetData}>重置</button>
                     </div>

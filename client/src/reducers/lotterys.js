@@ -16,6 +16,13 @@ const reducer = (state = initialState, action) => {
         case 'SET_SELECTED':
             const { index, value } = action.payload
             return { ...state, selectedIndex: index, selected: value }
+        case 'REMOVE_WINNERUSERS':
+            for (let i = winnerUsers.length - 1; i >= 0; i--) {
+                if (winnerUsers[i].status === 1) {
+                    winnerUsers[i].splice(i, 1)
+                }
+            }
+            return { ...state, winnerUsers: [...winnerUsers] }
         case 'SET_WINNERUSERS':
             return { ...state, winnerUsers: [...action.payload]}
         case 'SET_REMAINUSERS':

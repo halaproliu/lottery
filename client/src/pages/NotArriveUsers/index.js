@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table, Button, Space, Modal, Form, Input, message, Popconfirm } from 'antd'
 import * as NotArriveUserApi from '@/api/notArriveUser'
 import { formatDate } from '@/libs/date'
+import { PRIZE_LEVEL } from '@/constant/prize'
 
 const User = () => {
     const [ users, setUsers ] = useState([])
@@ -22,7 +23,19 @@ const User = () => {
         title: '花名',
         dataIndex: 'nickName',
         key: 'nickName',
-        width: 120
+        width: 120,
+        render: text => <span style={{ color: '#409eff' }}>{text}</span>
+    }, {
+        title: '奖品名称',
+        dataIndex: 'title',
+        key: 'title',
+        render: text => <span style={{ color: '#409eff' }}>{text}</span>
+    }, {
+        title: '奖品等级',
+        dataIndex: 'type',
+        key: 'type',
+        width: 120,
+        render: text => PRIZE_LEVEL[text]
     }, {
         title: '创建时间',
         dataIndex: 'createAt',
@@ -46,6 +59,8 @@ const User = () => {
                     <Button type="primary" onClick={() => editColumn(item, 2)}>编辑</Button>
                     <Popconfirm
                         title="确认要删除这条记录吗？"
+                        okText="确认"
+                        cancelText="取消"
                         onConfirm={onDelete}>
                         <Button type="primary" danger={true} onClick={() => delColumn(item)}>删除</Button>
                     </Popconfirm>

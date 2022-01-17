@@ -16,6 +16,17 @@ class Prize {
     }
 
     @Request({
+        url: '/getPrizeByParams',
+        method: RequestMethod.POST
+    })
+    async getPrizeByParams (ctx) {
+        let params = ctx.request.body
+        let res = await PrizeModel.find(params)
+        let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
+        ctx.body = genSuccessResponse(data)
+    }
+
+    @Request({
         url: '/savePrize',
         method: RequestMethod.POST
     })
@@ -27,6 +38,21 @@ class Prize {
             data = await PrizeModel.create(params)
         }
         ctx.body = genSuccessResponse(data)
+    }
+
+    @Request({
+        url: '/saveMultiPrize',
+        method: RequestMethod.POST
+    })
+    async saveMultiPrize (ctx) {
+        let params = ctx.request.body
+        let prizes = params.prizes
+        let data = await PrizeModel.create(prizes)
+        if (data) {
+            ctx.body = genSuccessResponse()
+        } else {
+            ctx.body = genSuccessResponse({ code: 0, msg: '保存失败' })
+        }
     }
 
     @Request({

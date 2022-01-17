@@ -4,6 +4,10 @@ export const getAllWinnerUsers = () => {
     return http.get('/api/getAllWinnerUsers')
 }
 
+export const getWinnerUsersByParams = (data) => {
+    return http.post('/api/getWinnerUsersByParams', data)
+}
+
 export const saveWinnerUser = (data) => {
     return http.post('/api/saveWinnerUser', data)
 }
@@ -18,4 +22,8 @@ export const updateWinnerUser = (data) => {
 
 export const delWinnerUser = (data) => {
     return http.delete(`/api/delWinnerUser?_id=${data._id}`, data)
+}
+
+export const delMultiWinnerUser = (data) => {
+    return http.post(`/api/delMultiWinnerUser`, data)
 }

@@ -1,6 +1,7 @@
 import initHightlightCell from '@/libs/initHighlightCell'
 import { ROW_COUNT, COLUMN_COUNT, COMPANY, YEAR } from '@/constant/prize'
 import * as WinnerUserApi from '@/api/winnerUser'
+import { setRemainUsers, setWinnerUsers, removeWinnerUsers } from '@/reducers/actions'
 
 class Lottery {
     constructor (container, basicData, fns) {
@@ -167,6 +168,7 @@ class Lottery {
     selectCard (duration = 600) {
         let width = 140
         let tag = -(this.selectedUsers.length - 1) / 2
+        console.log(this.selectedUsers)
         let users = this.selectedUsers.map(item => item.nickName) // 选中用户名字列表
         this.showBubble('congratulation', {
             user: users.join('、'),
@@ -352,42 +354,44 @@ class Lottery {
     }
 
     getCurrentWinners (obj) {
-        return (this.basicData.winnerUsers || []).filter(user => user.type === obj.type && user.subType === obj.subType) || []
+        return (this.basicData.winnerUsers || []).filter(user => user.type === obj.type && user.title === obj.title) || []
     }
 
     // 获取每次抽奖个数
     getEachCount () {
         let eachCount = this.selected.eachCount
         let currPrizeTotalCount = this.selected.count
-        let currPrizeCount = currPrizeTotalCount - eachCount
+        let currPrizeCount = currPrizeTotalCount - this.getCurrentWinners(this.selected).length
+        console.log(eachCount, currPrizeTotalCount, currPrizeCount)
         currPrizeCount = currPrizeCount > eachCount ? eachCount : currPrizeCount
         return currPrizeCount
     }
 
     async saveData () {
-        const { type, subType, title } = this.selected
-        console.log(this.selectedUsers)
+        if (this.selectedUsers.length === 0) return
+        const { type, title } = this.selected
         let opts = {
             users: this.selectedUsers,
             type,
-            subType,
             title
         }
         await WinnerUserApi.saveMultiWinnerUser(opts)
     }
 
-    async lottery () {
+    async lottery (relottery) {
         await this.rotateBall()
         this.selectedCardIndex = []
         this.selectedUsers = []
         let currPrizeCount = this.getEachCount()
         let leftCount = this.remainUsers.length // 剩余抽奖个数
-        console.log(leftCount)
         for (let i = 0; i < currPrizeCount; i++) {
             let selectedId = this.random(leftCount)
-            console.log(selectedId)
-            this.selectedUsers.push(this.remainUsers.splice(selectedId, 1)[0])
-            this.dispatch(this.setRemainUsers(this.remainUsers))
+            let selectUser = this.remainUsers.splice(selectedId, 1)[0]
+            selectUser.status = 1
+            selectUser.type = this.selected.type
+            selectUser.title = this.selected.title
+            this.selectedUsers.push(selectUser)
+            this.dispatch(setRemainUsers(this.remainUsers))
             leftCount--
             let cardIndex = this.random(this.TOTAL_CARDS)
             while(this.selectedCardIndex.includes(cardIndex)) {
@@ -395,6 +399,12 @@ class Lottery {
             }
             this.selectedCardIndex.push(cardIndex)
         }
+        if (relottery) {
+            this.dispatch(removeWinnerUsers())
+        }
+        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+        this.dispatch(setWinnerUsers(this.winnerUsers))
+        this.saveData()
         this.selectCard()
     }
 
@@ -423,7 +433,7 @@ class Lottery {
             return this.showBubble('finish')
         }
         this.isLottery = true
-        this.saveData()
+        // this.saveData()
         await this.resetCard()
         this.lottery()
     }

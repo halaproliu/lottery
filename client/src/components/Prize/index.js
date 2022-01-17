@@ -3,19 +3,17 @@ import './index.styl'
 import classnames from 'classnames'
 import { useSelector } from 'react-redux'
 
-function Prize (props) {
-  // const prizes = props.prizes || []
-  // const winnerUsers = props.winnerUsers || {}
+function Prize () {
   const prizes = useSelector(state => state.lotterys.prizes)
   const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
   const selected = useSelector(state => state.lotterys.selected)
   const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
   let [ currCount, setCurrCount ] = useState(0)
   const getCurrentWinners = (obj) => {
-    return winnerUsers.filter(user => user.type === obj.type && user.subType === obj.subType) || []
+    return winnerUsers.filter(user => user.type === obj.type && user.title === obj.title) || []
   }
   useEffect(() => {
-    if (prizes.length) {
+    if (prizes.length && selected) {
       setCurrCount(selected.count - getCurrentWinners(selected).length)
     }
   }, [selectedIndex, selected, winnerUsers, prizes])
@@ -30,9 +28,9 @@ function Prize (props) {
       </div>
       <ul className="lottery-prizeBar__list">
         {
-          prizes.map((prize, index) => {
-            let key = `${prize.type}-${prize.subType}`
-            let hasLotteryCount = (winnerUsers[key] || []).length
+          prizes.length && selected && prizes.map((prize, index) => {
+            let key = prize._id
+            let hasLotteryCount = getCurrentWinners(prize).length
             let leftCount = prize.count - hasLotteryCount
             let isShow = prize.type === selected.type
             let barWidth = `${(leftCount / prize.count) * 100}%`

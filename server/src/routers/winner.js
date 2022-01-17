@@ -17,6 +17,17 @@ class Winner {
     }
 
     @Request({
+        url: '/getWinnerUsersByParams',
+        method: RequestMethod.POST
+    })
+    async getWinnerUsersByParams (ctx) {
+        let params = ctx.request.body
+        let res = await WinnerModel.find(params)
+        let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
+        ctx.body = genSuccessResponse(data)
+    }
+
+    @Request({
         url: '/saveWinnerUser',
         method: RequestMethod.POST
     })
@@ -36,10 +47,9 @@ class Winner {
     })
     async saveMultiWinnerUser (ctx) {
         let params = ctx.request.body
-        let { users, type, subType, title } = params
+        let { users, type, title } = params
         users = users.map(user => {
             user.type = type
-            user.subType = subType
             user.title = title
             return user
         })
@@ -67,6 +77,18 @@ class Winner {
         let params = ctx.request.query
         let _id = params._id
         let data = await WinnerModel.findOneAndRemove({ _id }).exec()
+        ctx.body = genSuccessResponse(data)
+    }
+
+    @Request({
+        url: '/delMultiWinnerUser',
+        method: RequestMethod.POST
+    })
+    async delMultiWinnerUser (ctx) {
+        let params = ctx.request.body
+        let key = params.key
+        let values = params.values
+        let data = await WinnerModel.deleteMany({ [key]: { $in: values } }).exec()
         ctx.body = genSuccessResponse(data)
     }
 }

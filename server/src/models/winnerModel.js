@@ -11,7 +11,6 @@ let WinnerSchema = new Schema({
   nickName: String,
   prizeName: String,
   type: Number,
-  subType: Number,
   title: String,
   createAt: {
     type: Date,

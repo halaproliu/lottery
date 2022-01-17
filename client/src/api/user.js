@@ -4,6 +4,10 @@ export const getAllUsers = () => {
     return http.get('/api/getAllUsers')
 }
 
+export const getUserByParams = (data) => {
+    return http.post('/api/getUserByParams', data)
+}
+
 export const saveUser = (data) => {
     return http.post('/api/saveUser', data)
 }

@@ -98,7 +98,7 @@
 "type": 4,
 "subType": 0,
 "count": 5,
-"eachCount": 1,
+"eachCount": 5,
 "title": "小熊多功能锅",
 "img": "./img/xiaoxiong.png"
 }
@@ -106,7 +106,7 @@
 "type": 4,
 "subType": 1,
 "count": 4,
-"eachCount": 5,
+"eachCount": 4,
 "title": "cherry mx3.0s g80-3870lyaeu-2 机械键盘",
 "img": "./img/keyboard.png"
 }
