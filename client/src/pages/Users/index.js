@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Space, Modal, Form, Input, message, Popconfirm } from 'antd'
+import { Table, Button, Space, Modal, Form, Row, Col, Input, message, Popconfirm } from 'antd'
 import * as UserApi from '@/api/user'
 import { formatDate } from '@/libs/date'
 import { isEmpty } from '@/libs/utils'
@@ -126,21 +126,29 @@ const User = () => {
     }, [])
     return (
         <div className="user-container">
-            <Form
-                labelCol={{ span: 4 }}
-                layout="inline">
-                <Form.Item label="工号">
-                    <Input placeholder="请输入" value={state.code} onChange={e => onChange(e, 'code', 1)}></Input>
-                </Form.Item>
-                <Form.Item label="姓名">
-                    <Input placeholder="请输入" value={state.username} onChange={e => onChange(e, 'username', 1)}></Input>
-                </Form.Item>
-                <Form.Item label="花名">
-                    <Input placeholder="请输入" value={state.nickName} onChange={e => onChange(e, 'nickName', 1)}></Input>
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" onClick={getUserByParams}>查询</Button>
-                </Form.Item>
+            <Form layout="inline" labelCol={{ style: { width: 100 } }} labelWrap={true} className="user-container-form">
+                <Row gutter={24}>
+                    <Col span={8}>
+                        <Form.Item label="工号">
+                            <Input placeholder="请输入" value={state.code} onChange={e => onChange(e, 'code', 1)}></Input>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label="姓名">
+                            <Input placeholder="请输入" value={state.username} onChange={e => onChange(e, 'username', 1)}></Input>
+                        </Form.Item>
+                    </Col>
+                    <Col span={8}>
+                        <Form.Item label="花名">
+                            <Input placeholder="请输入" value={state.nickName} onChange={e => onChange(e, 'nickName', 1)}></Input>
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row gutter={24}>
+                    <Col span={24} style={{ textAlign: 'right', marginLeft: 10 }}>
+                        <Button type="primary" onClick={getUserByParams}>查询</Button>
+                    </Col>
+                </Row>
             </Form>
             <Button style={{ marginTop: '20px' }} type="primary" onClick={saveUser}>添加用户</Button>
             <Table style={{ marginTop: '20px' }} columns={columns} dataSource={users} scroll={{ y: 'calc(100vh - 300px)' }} rowKey="_id" bordered></Table>

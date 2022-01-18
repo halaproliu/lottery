@@ -19,6 +19,12 @@ export const setPreSelected = (payload) => {
         payload
     }
 }
+export const setPreSelectedUsers = (payload) => {
+    return {
+        type: 'SET_PRESELECTED_USERS',
+        payload
+    }
+}
 export const setSelected = (payload) => {
     return {
         type: 'SET_SELECTED',
@@ -30,12 +36,6 @@ export const setWinnerUsers = (payload) => {
     return {
         type: 'SET_WINNERUSERS',
         payload
-    }
-}
-
-export const removeWinnerUsers = () => {
-    return {
-        type: 'REMOVE_WINNERUSERS'
     }
 }
 

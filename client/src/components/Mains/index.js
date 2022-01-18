@@ -9,14 +9,20 @@ const Main = (props) => {
     const getCurrentPrize = props.getCurrentPrize
     const containerRef = useRef(null)
     const lotteryInstance = useRef(null)
+    const firstRender = useRef(null)
     const [ showLottey, setShowLottery ] = useState(false)
     const [ message, setMessage ] = useState('')
     const [ animateClass, setAnimateClass ] = useState('')
+    const prizes = useSelector(state => state.lotterys.prizes)
     const selected = useSelector(state => state.lotterys.selected)
     const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
+    const preSelecteIndex = useSelector(state => state.lotterys.preSelecteIndex)
+    const preSelected = useSelector(state => state.lotterys.preSelected)
+    const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
     const users = useSelector(state => state.lotterys.users)
     const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
     const remainUsers = useSelector(state => state.lotterys.remainUsers)
+    const prevState = useRef({winnerUsers, selectedIndex})
     const dispatch = useDispatch()
     // 展示弹框提示
     const showBubble = (i, options) => {
@@ -54,17 +60,20 @@ const Main = (props) => {
         lotteryInstance.current.resetData()
     }
 
-    const saveData = (e) => {
+    const toggleLottery = (e) => {
         e.stopPropagation()
-        lotteryInstance.current.saveData()
+        lotteryInstance.current.toggleLottery()
     }
     
     useEffect(() => {
-        if (users.length && remainUsers.length && selected && selectedIndex) {
-            const basicData = { users, winnerUsers, remainUsers, selected, selectedIndex }
+        if (users.length && remainUsers.length && winnerUsers && (selectedIndex !== prevState.current.selectedIndex)) {
+            prevState.current.selectedIndex = selectedIndex
+            prevState.current.winnerUsers = winnerUsers
+            const basicData = { prizes, users, winnerUsers, remainUsers, selected, selectedIndex, preSelected, preSelecteIndex, preSelectedUsers }
             const fns = { setShowLottery, showBubble, getCurrentPrize, dispatch }
-            if (!lotteryInstance.current) {
-                lotteryInstance.current = new Lottery(containerRef, basicData, fns)
+            lotteryInstance.current.initParams(containerRef, basicData, fns)
+            if (!firstRender.current) {
+                firstRender.current = true
                 lotteryInstance.current.init()
             }
             const onWindowResize = () => {
@@ -75,7 +84,11 @@ const Main = (props) => {
                 window.removeEventListener('resize', onWindowResize, false)
             }
         }
-    }, [users, winnerUsers, remainUsers, selected, selectedIndex])
+    }, [JSON.stringify(users), JSON.stringify(winnerUsers), JSON.stringify(remainUsers), selectedIndex, preSelecteIndex])
+
+    useEffect(() => {
+        lotteryInstance.current = new Lottery()
+    }, [])
 
     return (
         <>
@@ -90,7 +103,7 @@ const Main = (props) => {
                     <div>
                         <button className="btn" onClick={goLottery}>抽奖</button>
                         <button className="btn" onClick={reLottery}>重新抽奖</button>
-                        <button className="btn" onClick={saveData}>保存数据</button>
+                        <button className="btn" onClick={toggleLottery}>保存数据</button>
                         <button className="btn" onClick={exportResult}>导出抽奖结果</button>
                         <button className="btn" onClick={resetData}>重置</button>
                     </div>

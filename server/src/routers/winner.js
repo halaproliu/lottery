@@ -51,6 +51,7 @@ class Winner {
         users = users.map(user => {
             user.type = type
             user.title = title
+            delete user._id
             return user
         })
         let data = await WinnerModel.create(users)

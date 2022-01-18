@@ -130,7 +130,6 @@ const PrizeList = () => {
             result = await readerJson(file)
             try {
                 result = JSON.parse(result)
-                console.log(result)
             } catch {
                 result = []
             }
@@ -179,9 +178,9 @@ const PrizeList = () => {
     }, [])
     return (
         <div className="prize-container">
-            <Form layout="inline">
+            <Form layout="inline" labelCol={{ style: { width: 100 } }} labelWrap={true} className="prize-container-form">
                 <Form.Item label="奖品名称">
-                    <Select placeholder="请选择" value={state.title} style={{ width: '160px' }} onChange={e => onChange(e, 'title', 1)} allowClear>
+                    <Select placeholder="请选择" style={{ width: 160 }} value={state.title} onChange={e => onChange(e, 'title', 1)} allowClear>
                         {
                             prizeList.length && prizeList.map((prize) => {
                                 return (<Option value={prize.title} key={prize._id}>{prize.title}</Option>)
@@ -190,7 +189,7 @@ const PrizeList = () => {
                     </Select>
                 </Form.Item>
                 <Form.Item label="奖品等级">
-                    <Select placeholder="请选择" value={state.type} style={{ width: '160px' }} onChange={e => onChange(e, 'type', 1)} allowClear>
+                    <Select placeholder="请选择" style={{ width: 160 }} value={state.type} onChange={e => onChange(e, 'type', 1)} allowClear>
                         {
                             PRIZE_LEVEL.map((prize, index) => {
                                 return (<Option value={index} key={prize}>{prize}</Option>)

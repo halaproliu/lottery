@@ -31,6 +31,7 @@ const Lottery = () => {
         for (let i = len; i >= 0; i--) {
             let currSelected = prizes[i]
             let currWinners = getCurrentWinners(currSelected)
+            console.log('currSelected', currSelected)
              if (currWinners.length >= currSelected.count) {
                 if (i === 0) {
                     dispatch(setSelected({ index: i, value: currSelected }))
@@ -45,7 +46,7 @@ const Lottery = () => {
     useEffect(() => {
         init()
         document.body.style.backgroundColor = 'linear-gradient(to bottom, #131313 0%, #02101c 100%)'
-        document.title = '抽奖'
+        document.title = '抽奖程序'
     }, [])
 
     useEffect(() => {

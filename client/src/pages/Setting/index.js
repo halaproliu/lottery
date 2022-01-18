@@ -20,7 +20,6 @@ function Setting () {
     let arr = prizeList.filter(prize => {
       let index = `${prize.type}-${prize.subType}`
       if ((winnerUsers[index] || []).length) {
-        console.log(11)
         return prize
       }
     })

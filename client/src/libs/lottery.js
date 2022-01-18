@@ -1,10 +1,12 @@
 import initHightlightCell from '@/libs/initHighlightCell'
 import { ROW_COUNT, COLUMN_COUNT, COMPANY, YEAR } from '@/constant/prize'
 import * as WinnerUserApi from '@/api/winnerUser'
-import { setRemainUsers, setWinnerUsers, removeWinnerUsers, setPreSelected } from '@/reducers/actions'
+import * as NotArriveUserApi from '@/api/notArriveUser'
+import * as LotteryApi from '@/api/lottery'
+import { setRemainUsers, setWinnerUsers, setSelected, setPreSelected, setPreSelectedUsers } from '@/reducers/actions'
 
 class Lottery {
-    constructor (container, basicData, fns) {
+    constructor () {
         this.resolution = 1
         this.rotateTime = 2000
         this.scene = null
@@ -12,17 +14,6 @@ class Lottery {
         this.controls = null
         this.renderer = null
         this.highlightCell = initHightlightCell(YEAR)
-        this.container = container
-        this.basicData = basicData
-        this.winnerUsers = basicData.winnerUsers
-        this.remainUsers = basicData.remainUsers
-        this.selected = basicData.selected
-        this.selectedIndex = basicData.selectedIndex
-        this.setShowLottery = fns.setShowLottery
-        this.showBubble = fns.showBubble
-        this.getCurrentPrize = fns.getCurrentPrize
-        this.dispatch = fns.dispatch
-        this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
         this.table = []
         this.sphere = []
         this.threeDCards = []
@@ -31,6 +22,24 @@ class Lottery {
         this.shineTimer = null
         this.selectedCardIndex = []
         this.selectedUsers = []
+    }
+
+    initParams (container, basicData, fns) {
+        this.container = container
+        this.basicData = basicData
+        this.prizes = basicData.prizes
+        this.winnerUsers = basicData.winnerUsers
+        this.remainUsers = basicData.remainUsers
+        this.selected = basicData.selected
+        this.selectedIndex = basicData.selectedIndex
+        this.preSelecteIndex = basicData.preSelecteIndex
+        this.preSelected = basicData.preSelected
+        this.preSelectedUsers = basicData.preSelectedUsers
+        this.setShowLottery = fns.setShowLottery
+        this.showBubble = fns.showBubble
+        this.getCurrentPrize = fns.getCurrentPrize
+        this.dispatch = fns.dispatch
+        this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
     }
 
     init () {
@@ -98,12 +107,22 @@ class Lottery {
         }
     }
 
+    removeChild () {
+        let childNodes = this.container.current.childNodes
+        if (childNodes.length > 0) {
+            for (let i = childNodes.length - 2; i >= 0; i--) {
+                this.container.current.removeChild(childNodes[i])
+            }
+        }
+    }
+
     initRender () {
         // 创建渲染器
         this.renderer = new THREE.CSS3DRenderer()
         // 设置渲染器的大小
         this.renderer.setSize(window.innerWidth, window.innerHeight)
         this.container.current.appendChild(this.renderer.domElement)
+        // this.removeChild()
     }
 
     initControls () {
@@ -169,14 +188,12 @@ class Lottery {
     selectCard (duration = 600) {
         let width = 140
         let tag = -(this.selectedUsers.length - 1) / 2
-        console.log(this.selectedUsers)
         let users = this.selectedUsers.map(item => item.nickName) // 选中用户名字列表
         this.showBubble('congratulation', {
             user: users.join('、'),
             prize: this.selected.title,
             year: YEAR
         })
-        
         this.selectedCardIndex.forEach((cardIndex, index) => {
             this.changeCard(cardIndex, this.selectedUsers[index])
             let object = this.threeDCards[cardIndex]
@@ -355,18 +372,34 @@ class Lottery {
     }
 
     getCurrentWinners (obj) {
-        return (this.basicData.winnerUsers || []).filter(user => user.type === obj.type && user.title === obj.title) || []
+        return (this.winnerUsers || []).filter(user => user.type === obj.type && user.title === obj.title) || []
     }
 
     // 获取每次抽奖个数
     getEachCount () {
         let eachCount = this.selected.eachCount
         let currPrizeTotalCount = this.selected.count
-        console.log(this.selectedIndex, this.selected)
         let currPrizeCount = currPrizeTotalCount - this.getCurrentWinners(this.selected).length
-        console.log(eachCount, currPrizeTotalCount, currPrizeCount)
         currPrizeCount = currPrizeCount > eachCount ? eachCount : currPrizeCount
         return currPrizeCount
+    }
+
+    async resetData () {
+        if (this.isLottery) {
+            this.showBubble('wait')
+            return
+        }
+        let doREset = window.confirm('是否确认重置数据，重置后，当前已抽的奖项全部清空？')
+        if (!doREset) return
+        this.showBubble('reset')
+        this.addHighlight()
+        await this.resetCard()
+        LotteryApi.resetData()
+        this.setShowLottery(false)
+        this.dispatch(setPreSelectedUsers([]))
+        // this.getCurrentPrize()
+        this.winnerUsers = []
+        this.switchScreen('enter')
     }
 
     async saveData () {
@@ -378,6 +411,17 @@ class Lottery {
             title
         }
         await WinnerUserApi.saveMultiWinnerUser(opts)
+        // this.preSelectUsers = res.map(item => item.code)
+    }
+
+    async saveNotArriveUser () {
+        if (this.selectedUsers.length === 0) return
+        const { type, title } = this.preSelected
+        await NotArriveUserApi.saveMultiNotArriveUser({
+            users: this.selectedUsers,
+            type,
+            title
+        })
     }
 
     async lottery (relottery) {
@@ -401,12 +445,19 @@ class Lottery {
             }
             this.selectedCardIndex.push(cardIndex)
         }
+        this.dispatch(setPreSelectedUsers(this.selectedUsers))
         if (relottery) {
-            this.dispatch(removeWinnerUsers())
+            let len = this.winnerUsers.length
+            let arr = this.preSelectedUsers.map(item => item.code)
+            for (let i = len - 1; i >= 0; i--) {
+                if (arr.includes(this.winnerUsers[i].code)) {
+                    this.winnerUsers.splice(i, 1)
+                }
+            }
+            this.dispatch(setWinnerUsers(this.winnerUsers))
         }
-        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-        this.dispatch(setWinnerUsers(this.winnerUsers))
-        this.saveData()
+        // this.getCurrentPrize()
+        // this.saveData()
         this.selectCard()
     }
 
@@ -434,12 +485,48 @@ class Lottery {
         if (!this.isStillHasPrize()) {
             return this.showBubble('finish')
         }
-        this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         this.isLottery = true
-        // this.saveData()
-        this.getCurrentPrize()
+        this.saveData()
+        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+        this.dispatch(setWinnerUsers(this.winnerUsers))
+        console.log(111)
+        this.dispatch(setPreSelectedUsers([]))
+        this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         await this.resetCard()
         this.lottery()
+    }
+
+    async reLottery () {
+        if (this.isLottery) {
+            this.showBubble('wait')
+            return
+        }
+        if (!this.isStillHasPrize()) {
+            return this.showBubble('finish')
+        }
+        if (this.selectedUsers.length === 0) {
+            this.showBubble('tip')
+            return
+        }
+        this.isLottery = true
+        this.dispatch(setPreSelectedUsers([]))
+        // await WinnerUserApi.delMultiWinnerUser({ key: '_id', values: this.preSelectUsers.map(user => user._id )})
+        await this.saveNotArriveUser()
+        this.showBubble('relottery', {
+            prize: this.preSelected.title
+        })
+        await this.resetCard()
+        this.lottery(true)
+    }
+
+    async toggleLottery () {
+        this.saveData()
+        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+        this.dispatch(setWinnerUsers(this.winnerUsers))
+        this.dispatch(setPreSelectedUsers([]))
+        // this.getCurrentPrize()
+        this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
+        await this.resetCard()
     }
 }
 

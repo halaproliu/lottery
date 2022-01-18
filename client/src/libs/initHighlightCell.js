@@ -25,7 +25,6 @@ const initHightlightCell = (num) => {
       x = tmpArr[0]
       y = tmpArr[1]
       cell = `${x}-${parseInt(y) + i * 4}`
-      // console.log(cell)
       cells.push(cell)
     }
   }

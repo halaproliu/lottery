@@ -35,16 +35,19 @@ class Winner {
         method: RequestMethod.POST
     })
     async saveMultiNotArriveUser (ctx) {
-        let params = ctx.request.body
-        let { users, type, subType, title } = params
-        users = users.map(user => {
-            user.type = type
-            user.subType = subType
-            user.title = title
-            return user
-        })
-        let data = await WinnerModel.create(users)
-        ctx.body = genSuccessResponse(data)
+        try {
+            let params = ctx.request.body
+            let { users, type, title } = params
+            users = users.map(user => {
+                user.type = type
+                user.title = title
+                return user
+            })
+            let data = await WinsNotArriveModel.create(users)
+            ctx.body = genSuccessResponse(data)
+        } catch (e) {
+            ctx.body = genSuccessResponse({code: 500, msg: '保存失败', data: e})
+        }
     }
 
     @Request({

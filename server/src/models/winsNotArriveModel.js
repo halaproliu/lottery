@@ -10,6 +10,7 @@ let WinNotArriveSchema = new Schema({
   username: String,
   prizeName: String,
   type: Number,
+  subType: Number,
   title: String,
   createAt: {
     type: Date,
