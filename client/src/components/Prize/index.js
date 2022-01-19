@@ -17,7 +17,7 @@ function Prize () {
   }
   useEffect(() => {
     if (prizes.length && selected) {
-      setCurrCount(selected.count - getCurrentWinners(preSelected).length)
+      setCurrCount(selected.count - getCurrentWinners(selected).length - preSelectedUsers.length)
     }
   }, [selectedIndex, JSON.stringify(selected), JSON.stringify(winnerUsers), JSON.stringify(prizes), JSON.stringify(preSelectedUsers)])
   return (
@@ -35,11 +35,14 @@ function Prize () {
             let key = prize._id
             let hasLotteryCount = getCurrentWinners(prize).length
             let leftCount = prize.count - hasLotteryCount
+            if (index === selectedIndex) {
+              leftCount -= preSelectedUsers.length
+            }
             let isShow = prize.type === selected.type
             let barWidth = `${(leftCount / prize.count) * 100}%`
             return (
               isShow && (
-                <li className={classnames('lottery-prizeBar__item', {'shine': preSelectedIndex === index})} key={key}>
+                <li className={classnames('lottery-prizeBar__item', {'shine': selectedIndex === index})} key={key}>
                   <div className="lottery-prizeBar__img">
                     <img src={prize.img} alt={prize.title} />
                   </div>

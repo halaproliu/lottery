@@ -13,6 +13,8 @@ import { useSelector, useDispatch } from 'react-redux'
 const Lottery = () => {
     const prizes = useSelector(state => state.lotterys.prizes)
     const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
+    const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
+    const preSelectedIndex = useSelector(state => state.lotterys.preSelectedIndex)
     const isLoaded = useSelector(state => state.lotterys.isLoaded)
     const dispatch = useDispatch()
     const onInit = useCallback(data => dispatch(initData(data)), [dispatch])
@@ -31,8 +33,12 @@ const Lottery = () => {
         for (let i = len; i >= 0; i--) {
             let currSelected = prizes[i]
             let currWinners = getCurrentWinners(currSelected)
+            let count = currWinners.length
+            if (preSelectedIndex === i) {
+                count += preSelectedUsers.length
+            }
             console.log('currSelected', currSelected)
-             if (currWinners.length >= currSelected.count) {
+             if (count >= currSelected.count) {
                 if (i === 0) {
                     dispatch(setSelected({ index: i, value: currSelected }))
                 }
@@ -64,7 +70,7 @@ const Lottery = () => {
                     <Prize prizes={prizes} winnerUsers={winnerUsers} />
                 )
             }
-            <Main getCurrentPrize={getCurrentPrize} />
+            <Main />
         </div>
     )
 }

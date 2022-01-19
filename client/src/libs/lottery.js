@@ -22,6 +22,7 @@ class Lottery {
         this.shineTimer = null
         this.selectedCardIndex = []
         this.selectedUsers = []
+        this.isManualSaved = false
     }
 
     initParams (container, basicData, fns) {
@@ -37,7 +38,6 @@ class Lottery {
         this.preSelectedUsers = basicData.preSelectedUsers
         this.setShowLottery = fns.setShowLottery
         this.showBubble = fns.showBubble
-        this.getCurrentPrize = fns.getCurrentPrize
         this.dispatch = fns.dispatch
         this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
     }
@@ -397,8 +397,8 @@ class Lottery {
         LotteryApi.resetData()
         this.setShowLottery(false)
         this.dispatch(setPreSelectedUsers([]))
-        // this.getCurrentPrize()
         this.winnerUsers = []
+        this.dispatch(setWinnerUsers(this.winnerUsers))
         this.switchScreen('enter')
     }
 
@@ -486,12 +486,15 @@ class Lottery {
             return this.showBubble('finish')
         }
         this.isLottery = true
-        this.saveData()
+        if (!this.isManualSaved) {
+            this.saveData()
+        } else {
+            this.isManualSaved = false
+        }
         this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
         this.dispatch(setWinnerUsers(this.winnerUsers))
-        console.log(111)
-        this.dispatch(setPreSelectedUsers([]))
         this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
+        this.dispatch(setPreSelectedUsers([]))
         await this.resetCard()
         this.lottery()
     }
@@ -510,7 +513,6 @@ class Lottery {
         }
         this.isLottery = true
         this.dispatch(setPreSelectedUsers([]))
-        // await WinnerUserApi.delMultiWinnerUser({ key: '_id', values: this.preSelectUsers.map(user => user._id )})
         await this.saveNotArriveUser()
         this.showBubble('relottery', {
             prize: this.preSelected.title
@@ -520,11 +522,11 @@ class Lottery {
     }
 
     async toggleLottery () {
+        this.isManualSaved = true
         this.saveData()
         this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
         this.dispatch(setWinnerUsers(this.winnerUsers))
         this.dispatch(setPreSelectedUsers([]))
-        // this.getCurrentPrize()
         this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         await this.resetCard()
     }

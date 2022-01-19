@@ -29,12 +29,12 @@ const PrizeList = () => {
         width: 120,
         render: text => PRIZE_LEVEL[text]
     }, {
-        title: '奖品总数(个)',
+        title: '奖品总数',
         dataIndex: 'count',
         key: 'count',
         width: 100
     }, {
-        title: '抽取个数(个)',
+        title: '抽取个数',
         dataIndex: 'eachCount',
         key: 'eachCount',
         width: 100
@@ -42,6 +42,7 @@ const PrizeList = () => {
         title: '奖品图片',
         dataIndex: 'img',
         key: 'img',
+        width: 90,
         render: img => {
             return (
                 <Image width={40} height={40} src={img}></Image>
@@ -198,14 +199,18 @@ const PrizeList = () => {
                     </Select>
                 </Form.Item>
                 <Button type="primary" onClick={onSearchByParams}>查询</Button>
+                <Button type="primary" style={{ marginLeft: '10px' }} onClick={savePrize}>添加奖品</Button>
+                <Upload accept='.json,.xlsx,.xls,.csv' beforeUpload={beforeUpload}>
+                    <Button style={{ marginLeft: '10px' }} type="primary" onClick={importConfig}>导入数据</Button>
+                </Upload>
             </Form>
-            <div style={{ marginTop: '20px' }}>
+            {/* <div style={{ marginTop: '20px' }}>
                 <Button type="primary" onClick={savePrize}>添加奖品</Button>
                 <Upload accept='.json,.xlsx,.xls,.csv' beforeUpload={beforeUpload}>
                     <Button style={{ marginLeft: '10px' }} type="primary" onClick={importConfig}>导入数据</Button>
                 </Upload>
-            </div>
-            <Table style={{ marginTop: '20px' }} columns={columns} dataSource={prizeList} scroll={{ y: 'calc(100vh - 300px)' }} rowKey="_id" bordered></Table>
+            </div> */}
+            <Table style={{ marginTop: '20px' }} columns={columns} dataSource={prizeList} scroll={{ y: 'calc(100vh - 340px)' }} rowKey="_id" bordered></Table>
             <Modal title={currentType === 1 ? '新增奖品' : '编辑奖品'} visible={visible} cancelText="取消" okText="确定" onOk={onSave} onCancel={() => setVisible(false)}>
                 <Form
                     labelCol={{ span: 4 }}

@@ -5,8 +5,7 @@ import Lottery from '@/libs/lottery'
 import { useSelector, useDispatch } from 'react-redux'
 import './index.styl'
 
-const Main = (props) => {
-    const getCurrentPrize = props.getCurrentPrize
+const Main = () => {
     const containerRef = useRef(null)
     const lotteryInstance = useRef(null)
     const firstRender = useRef(null)
@@ -70,7 +69,7 @@ const Main = (props) => {
             prevState.current.selectedIndex = selectedIndex
             prevState.current.winnerUsers = winnerUsers
             const basicData = { prizes, users, winnerUsers, remainUsers, selected, selectedIndex, preSelected, preSelecteIndex, preSelectedUsers }
-            const fns = { setShowLottery, showBubble, getCurrentPrize, dispatch }
+            const fns = { setShowLottery, showBubble, dispatch }
             lotteryInstance.current.initParams(containerRef, basicData, fns)
             if (!firstRender.current) {
                 firstRender.current = true
