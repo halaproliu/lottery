@@ -4,6 +4,10 @@ export const getAllNotArriveUsers = () => {
     return http.get('/api/getAllNotArriveUsers')
 }
 
+export const getNotArriveUsersByParams = (data) => {
+    return http.post('/api/getNotArriveUsersByParams', data)
+}
+
 export const saveNotArriveUser = (data) => {
     return http.post('/api/saveNotArriveUser', data)
 }

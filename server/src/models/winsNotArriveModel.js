@@ -8,6 +8,7 @@ let WinNotArriveSchema = new Schema({
   id: String,
   code: Number,
   username: String,
+  nickName: String,
   prizeName: String,
   type: Number,
   subType: Number,
@@ -29,4 +30,4 @@ let WinNotArrive = mongoose.model('WinNotArrive', WinNotArriveSchema)
 
 WinNotArriveSchema.plugin(baseModel)
 
-module.exports = mongoose.models.WinNotArrive ? mongoose.models.WinNotArrive : WinNotArrive
+module.exports = WinNotArrive

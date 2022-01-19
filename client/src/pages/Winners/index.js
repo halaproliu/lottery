@@ -211,7 +211,7 @@ const WinnerUsers = () => {
                         <Input placeholder="请输入" value={currentItem.username} onChange={(e) => onChange(e, 'username')}></Input>
                     </Form.Item>
                     <Form.Item label="花名">
-                    <Input placeholder="请输入" value={currentItem.nickName} onChange={(e) => onChange(e, 'nickName')}></Input>
+                        <Input placeholder="请输入" value={currentItem.nickName} onChange={(e) => onChange(e, 'nickName')}></Input>
                     </Form.Item>
                 </Form>
             </Modal>

@@ -37,7 +37,6 @@ const Lottery = () => {
             if (preSelectedIndex === i) {
                 count += preSelectedUsers.length
             }
-            console.log('currSelected', currSelected)
              if (count >= currSelected.count) {
                 if (i === 0) {
                     dispatch(setSelected({ index: i, value: currSelected }))

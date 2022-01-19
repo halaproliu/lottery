@@ -416,7 +416,7 @@ class Lottery {
 
     async saveNotArriveUser () {
         if (this.selectedUsers.length === 0) return
-        const { type, title } = this.preSelected
+        const { type, title } = this.selected
         await NotArriveUserApi.saveMultiNotArriveUser({
             users: this.selectedUsers,
             type,
@@ -488,14 +488,14 @@ class Lottery {
         this.isLottery = true
         if (!this.isManualSaved) {
             this.saveData()
+            this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+            this.dispatch(setWinnerUsers(this.winnerUsers))
+            this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
+            this.dispatch(setPreSelectedUsers([]))
+            await this.resetCard()
         } else {
             this.isManualSaved = false
         }
-        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-        this.dispatch(setWinnerUsers(this.winnerUsers))
-        this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
-        this.dispatch(setPreSelectedUsers([]))
-        await this.resetCard()
         this.lottery()
     }
 
@@ -512,7 +512,6 @@ class Lottery {
             return
         }
         this.isLottery = true
-        this.dispatch(setPreSelectedUsers([]))
         await this.saveNotArriveUser()
         this.showBubble('relottery', {
             prize: this.preSelected.title
@@ -526,8 +525,8 @@ class Lottery {
         this.saveData()
         this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
         this.dispatch(setWinnerUsers(this.winnerUsers))
-        this.dispatch(setPreSelectedUsers([]))
         this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
+        this.dispatch(setPreSelectedUsers([]))
         await this.resetCard()
     }
 }

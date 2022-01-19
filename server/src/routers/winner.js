@@ -22,7 +22,7 @@ class Winner {
     })
     async getWinnerUsersByParams (ctx) {
         let params = ctx.request.body
-        let res = await WinnerModel.find(params)
+        let res = await WinnerModel.find(params).exec()
         let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }
@@ -34,7 +34,7 @@ class Winner {
     async saveWinnerUser (ctx) {
         let params = ctx.request.body
         let code = params.code
-        let data = await WinnerModel.findOne({ code })
+        let data = await WinnerModel.findOne({ code }).exec()
         if (!data) {
             data = await WinnerModel.create(params)
         }

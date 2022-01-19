@@ -17,6 +17,17 @@ class Winner {
     }
 
     @Request({
+        url: '/getNotArriveUsersByParams',
+        method: RequestMethod.POST
+    })
+    async getNotArriveUsersByParams (ctx) {
+        let params = ctx.request.body
+        let res = await WinsNotArriveModel.find(params).exec()
+        let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
+        ctx.body = genSuccessResponse(data)
+    }
+
+    @Request({
         url: '/saveNotArriveUser',
         method: RequestMethod.POST
     })
