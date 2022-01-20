@@ -43,7 +43,6 @@ class Lottery {
         this.preSelected = basicData.preSelected
         this.preSelectedUsers = basicData.preSelectedUsers
         this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
-        console.log('initParams', this.count, this.selectedIndex, this.selected, this.preSelectedIndex, this.preSelected, this.preSelectedUsers)
     }
 
     init () {
@@ -391,14 +390,12 @@ class Lottery {
     async saveData () {
         if (this.selectedUsers.length === 0) return
         const { type, title } = this.preSelected
-        console.log('saveData', this.selectedIndex, this.selected, this.preSelected, this.selectedUsers, this.preSelectedUsers)
         let opts = {
             users: this.selectedUsers,
             type,
             title
         }
         await WinnerUserApi.saveMultiWinnerUser(opts)
-        // this.preSelectUsers = res.map(item => item.code)
     }
 
     async saveNotArriveUser () {
@@ -450,12 +447,12 @@ class Lottery {
         }
         this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
         this.dispatch(setWinnerUsers(this.winnerUsers))
-        // this.saveData()
         this.selectCard()
     }
 
     isStillHasPrize () {
-        if (this.selected.count === (this.winnerUsers || []).length && this.selectedIndex === 0) {
+        let count = this.getCurrentWinners(this.selected).length
+        if (this.selected.count === count && this.selectedIndex === 0) {
             return false
         }
         return true
@@ -481,8 +478,6 @@ class Lottery {
         this.isLottery = true
         if (!this.isManualSaved) {
             this.saveData()
-            // this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-            // this.dispatch(setWinnerUsers(this.winnerUsers))
             this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
             this.dispatch(setPreSelectedUsers([]))
             await this.resetCard()
@@ -521,6 +516,7 @@ class Lottery {
         let doREset = window.confirm('是否确认重置数据，重置后，当前已抽的奖项全部清空？')
         if (!doREset) return
         this.showBubble('reset')
+        this.count = 0
         this.addHighlight()
         await this.resetCard()
         LotteryApi.resetData()
@@ -535,8 +531,6 @@ class Lottery {
     async toggleLottery () {
         this.isManualSaved = true
         this.saveData()
-        // this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-        // this.dispatch(setWinnerUsers(this.winnerUsers))
         this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         this.dispatch(setPreSelectedUsers([]))
         await this.resetCard()

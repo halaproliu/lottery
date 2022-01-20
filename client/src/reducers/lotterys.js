@@ -19,7 +19,6 @@ const reducer = (state = initialState, action) => {
         case 'SET_SELECTED':
             const { index, value } = action.payload
             if (!state.preSelectedIndex) {
-                console.log(111, index)
                 return { ...state, selectedIndex: index, selected: { ...value }, preSelectedIndex: index, preSelected: { ...value } }
             }
             return { ...state, selectedIndex: index, selected: { ...value } }
