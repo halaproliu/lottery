@@ -136,6 +136,7 @@ const User = () => {
 
     useEffect(() => {
         init()
+        document.title = '未到场人员列表'
     }, [])
     return (
         <div className="user-container">

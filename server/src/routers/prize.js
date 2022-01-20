@@ -21,7 +21,7 @@ class Prize {
     })
     async getPrizeByParams (ctx) {
         let params = ctx.request.body
-        let res = await PrizeModel.find(params)
+        let res = await PrizeModel.find(params).exec()
         let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }
@@ -33,7 +33,7 @@ class Prize {
     async savePrize (ctx) {
         let params = ctx.request.body
         let title = params.title
-        let data = await PrizeModel.findOne({ title })
+        let data = await PrizeModel.findOne({ title }).exec()
         if (!data) {
             data = await PrizeModel.create(params)
         }

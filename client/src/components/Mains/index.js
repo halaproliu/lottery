@@ -13,14 +13,14 @@ const Main = () => {
     const [ message, setMessage ] = useState('')
     const [ animateClass, setAnimateClass ] = useState('')
     const prizes = useSelector(state => state.lotterys.prizes)
-    const selected = useSelector(state => state.lotterys.selected)
-    const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
-    const preSelecteIndex = useSelector(state => state.lotterys.preSelecteIndex)
-    const preSelected = useSelector(state => state.lotterys.preSelected)
-    const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
     const users = useSelector(state => state.lotterys.users)
     const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
     const remainUsers = useSelector(state => state.lotterys.remainUsers)
+    const selected = useSelector(state => state.lotterys.selected)
+    const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
+    const preSelectedIndex = useSelector(state => state.lotterys.preSelectedIndex)
+    const preSelected = useSelector(state => state.lotterys.preSelected)
+    const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
     const prevState = useRef({winnerUsers, selectedIndex})
     const dispatch = useDispatch()
     // 展示弹框提示
@@ -68,9 +68,8 @@ const Main = () => {
         if (users.length && remainUsers.length && winnerUsers && (selectedIndex !== prevState.current.selectedIndex)) {
             prevState.current.selectedIndex = selectedIndex
             prevState.current.winnerUsers = winnerUsers
-            const basicData = { prizes, users, winnerUsers, remainUsers, selected, selectedIndex, preSelected, preSelecteIndex, preSelectedUsers }
-            const fns = { setShowLottery, showBubble, dispatch }
-            lotteryInstance.current.initParams(containerRef, basicData, fns)
+            const basicData = { prizes, users, winnerUsers, remainUsers, selected, selectedIndex, preSelected, preSelectedIndex, preSelectedUsers }
+            lotteryInstance.current.initParams(containerRef, basicData)
             if (!firstRender.current) {
                 firstRender.current = true
                 lotteryInstance.current.init()
@@ -83,10 +82,11 @@ const Main = () => {
                 window.removeEventListener('resize', onWindowResize, false)
             }
         }
-    }, [JSON.stringify(users), JSON.stringify(winnerUsers), JSON.stringify(remainUsers), selectedIndex, preSelecteIndex])
+    }, [JSON.stringify(users), JSON.stringify(winnerUsers), JSON.stringify(remainUsers), selectedIndex, preSelectedIndex, JSON.stringify(preSelectedUsers)])
 
     useEffect(() => {
-        lotteryInstance.current = new Lottery()
+        const fns = { setShowLottery, showBubble, dispatch }
+        lotteryInstance.current = new Lottery(fns)
     }, [])
 
     return (

@@ -1,5 +1,4 @@
 import Lottery from '@/pages/Lotterys'
-import Setting from '@/pages/Setting'
 import Users from '@/pages/Users'
 import Winners from '@/pages/Winners'
 import NotArriveUsers from '@/pages/NotArriveUsers'
@@ -25,10 +24,6 @@ const routes = [{
   path: '/notArriveUsers',
   title: '中奖未到场用户列表',
   component: NotArriveUsers
-}, {
-  path: '/setting',
-  title: '操作',
-  component: Setting
 }]
 
 export default routes

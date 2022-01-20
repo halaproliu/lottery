@@ -34,9 +34,9 @@ const Lottery = () => {
             let currSelected = prizes[i]
             let currWinners = getCurrentWinners(currSelected)
             let count = currWinners.length
-            if (preSelectedIndex === i) {
-                count += preSelectedUsers.length
-            }
+            // if (preSelectedIndex === i) {
+            //     count += preSelectedUsers.length
+            // }
              if (count >= currSelected.count) {
                 if (i === 0) {
                     dispatch(setSelected({ index: i, value: currSelected }))

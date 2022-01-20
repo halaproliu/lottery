@@ -12,7 +12,7 @@ class Winner {
         method: RequestMethod.GET
     })
     async getAllWinnerUsers (ctx) {
-        let data = await WinnerModel.find({}).sort({ code: 1 }).exec()
+        let data = await WinnerModel.find({}).sort({ type: 1, title: 1 }).exec()
         ctx.body = genSuccessResponse(data)
     }
 
@@ -22,7 +22,7 @@ class Winner {
     })
     async getWinnerUsersByParams (ctx) {
         let params = ctx.request.body
-        let res = await WinnerModel.find(params).exec()
+        let res = await WinnerModel.find(params).sort({ type: 1, title: 1 }).exec()
         let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }

@@ -19,12 +19,13 @@ const reducer = (state = initialState, action) => {
         case 'SET_SELECTED':
             const { index, value } = action.payload
             if (!state.preSelectedIndex) {
-                return { ...state, selectedIndex: index, selected: value, preSelectedIndex: index, preSelected: value }
+                console.log(111, index)
+                return { ...state, selectedIndex: index, selected: { ...value }, preSelectedIndex: index, preSelected: { ...value } }
             }
-            return { ...state, selectedIndex: index, selected: value }
+            return { ...state, selectedIndex: index, selected: { ...value } }
         case 'SET_PRESELECTED':
             const { index: i, value: val } = action.payload
-            return { ...state, preSelectedIndex: i, preSelected: val,  }
+            return { ...state, preSelectedIndex: i, preSelected: { ...val },  }
         case 'SET_PRESELECTED_USERS':
             const preSelectedUsers = action.payload
             return { ...state, preSelectedUsers: [...preSelectedUsers] }

@@ -3,10 +3,11 @@ import { ROW_COUNT, COLUMN_COUNT, COMPANY, YEAR } from '@/constant/prize'
 import * as WinnerUserApi from '@/api/winnerUser'
 import * as NotArriveUserApi from '@/api/notArriveUser'
 import * as LotteryApi from '@/api/lottery'
-import { setRemainUsers, setWinnerUsers, setSelected, setPreSelected, setPreSelectedUsers } from '@/reducers/actions'
+import { setRemainUsers, setWinnerUsers, setPreSelected, setPreSelectedUsers } from '@/reducers/actions'
+import config from '@/config'
 
 class Lottery {
-    constructor () {
+    constructor (fns) {
         this.resolution = 1
         this.rotateTime = 2000
         this.scene = null
@@ -23,9 +24,14 @@ class Lottery {
         this.selectedCardIndex = []
         this.selectedUsers = []
         this.isManualSaved = false
+        this.count = 0
+        this.setShowLottery = fns.setShowLottery
+        this.showBubble = fns.showBubble
+        this.dispatch = fns.dispatch
     }
 
-    initParams (container, basicData, fns) {
+    initParams (container, basicData) {
+        this.count++
         this.container = container
         this.basicData = basicData
         this.prizes = basicData.prizes
@@ -33,13 +39,11 @@ class Lottery {
         this.remainUsers = basicData.remainUsers
         this.selected = basicData.selected
         this.selectedIndex = basicData.selectedIndex
-        this.preSelecteIndex = basicData.preSelecteIndex
+        this.preSelectedIndex = basicData.preSelectedIndex
         this.preSelected = basicData.preSelected
         this.preSelectedUsers = basicData.preSelectedUsers
-        this.setShowLottery = fns.setShowLottery
-        this.showBubble = fns.showBubble
-        this.dispatch = fns.dispatch
         this.showTable = this.basicData.users.length === this.basicData.remainUsers.length
+        console.log('initParams', this.count, this.selectedIndex, this.selected, this.preSelectedIndex, this.preSelected, this.preSelectedUsers)
     }
 
     init () {
@@ -384,27 +388,10 @@ class Lottery {
         return currPrizeCount
     }
 
-    async resetData () {
-        if (this.isLottery) {
-            this.showBubble('wait')
-            return
-        }
-        let doREset = window.confirm('是否确认重置数据，重置后，当前已抽的奖项全部清空？')
-        if (!doREset) return
-        this.showBubble('reset')
-        this.addHighlight()
-        await this.resetCard()
-        LotteryApi.resetData()
-        this.setShowLottery(false)
-        this.dispatch(setPreSelectedUsers([]))
-        this.winnerUsers = []
-        this.dispatch(setWinnerUsers(this.winnerUsers))
-        this.switchScreen('enter')
-    }
-
     async saveData () {
         if (this.selectedUsers.length === 0) return
-        const { type, title } = this.selected
+        const { type, title } = this.preSelected
+        console.log('saveData', this.selectedIndex, this.selected, this.preSelected, this.selectedUsers, this.preSelectedUsers)
         let opts = {
             users: this.selectedUsers,
             type,
@@ -416,7 +403,7 @@ class Lottery {
 
     async saveNotArriveUser () {
         if (this.selectedUsers.length === 0) return
-        const { type, title } = this.selected
+        const { type, title } = this.preSelected
         await NotArriveUserApi.saveMultiNotArriveUser({
             users: this.selectedUsers,
             type,
@@ -434,8 +421,13 @@ class Lottery {
             let selectedId = this.random(leftCount)
             let selectUser = this.remainUsers.splice(selectedId, 1)[0]
             selectUser.status = 1
-            selectUser.type = this.selected.type
-            selectUser.title = this.selected.title
+            if (relottery) {
+                selectUser.type = this.preSelected.type
+                selectUser.title = this.preSelected.title
+            } else {
+                selectUser.type = this.selected.type
+                selectUser.title = this.selected.title
+            }
             this.selectedUsers.push(selectUser)
             this.dispatch(setRemainUsers(this.remainUsers))
             leftCount--
@@ -456,7 +448,8 @@ class Lottery {
             }
             this.dispatch(setWinnerUsers(this.winnerUsers))
         }
-        // this.getCurrentPrize()
+        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+        this.dispatch(setWinnerUsers(this.winnerUsers))
         // this.saveData()
         this.selectCard()
     }
@@ -488,8 +481,8 @@ class Lottery {
         this.isLottery = true
         if (!this.isManualSaved) {
             this.saveData()
-            this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-            this.dispatch(setWinnerUsers(this.winnerUsers))
+            // this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+            // this.dispatch(setWinnerUsers(this.winnerUsers))
             this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
             this.dispatch(setPreSelectedUsers([]))
             await this.resetCard()
@@ -520,14 +513,43 @@ class Lottery {
         this.lottery(true)
     }
 
+    async resetData () {
+        if (this.isLottery) {
+            this.showBubble('wait')
+            return
+        }
+        let doREset = window.confirm('是否确认重置数据，重置后，当前已抽的奖项全部清空？')
+        if (!doREset) return
+        this.showBubble('reset')
+        this.addHighlight()
+        await this.resetCard()
+        LotteryApi.resetData()
+        this.setShowLottery(false)
+        this.dispatch(setPreSelectedUsers([]))
+        this.winnerUsers = []
+        this.dispatch(setWinnerUsers(this.winnerUsers))
+        this.dispatch(setPreSelected({i: this.selectedIndex, value: this.selected}))
+        this.switchScreen('enter')
+    }
+
     async toggleLottery () {
         this.isManualSaved = true
         this.saveData()
-        this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
-        this.dispatch(setWinnerUsers(this.winnerUsers))
+        // this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
+        // this.dispatch(setWinnerUsers(this.winnerUsers))
         this.dispatch(setPreSelected({ index: this.selectedIndex, value: this.selected }))
         this.dispatch(setPreSelectedUsers([]))
         await this.resetCard()
+    }
+
+    async exportResult () {
+        let { url } = await LotteryApi.exportFile()
+        const el = document.createElement('a')
+        el.setAttribute('href', config.baseURL + url)
+        document.body.appendChild(el)
+        el.click()
+        el.remove()
+
     }
 }
 

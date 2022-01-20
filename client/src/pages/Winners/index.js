@@ -22,6 +22,12 @@ const WinnerUsers = () => {
         username: '',
         code: ''
     })
+    const [ rowSelection, setRowSelection ] = useState({
+        onChange: (record, selected) => {
+            setRowSelection({ record: [...record], selectedRows: [...selected]})
+            onDeleteMultiRows(record)
+        }
+    })
     const columns = [{
         title: '工号',
         dataIndex: 'code',
@@ -129,6 +135,17 @@ const WinnerUsers = () => {
         message.success('删除成功')
     }
 
+    const onDeleteMultiRows = async (record) => {
+        await WinnerUserApi.delMultiWinnerUser({ key: '_id', values: record })
+        for (let i = users.length - 1; i >= 0; i--) {
+            if (record.includes(users[i]._id)) {
+                users.splice(i, 1)
+                setUsers([...users])
+                break
+            }
+        }
+    }
+
     const onSearchByParams = async () => {
         let res
         if (!isEmpty(state)) {
@@ -198,7 +215,8 @@ const WinnerUsers = () => {
                     </Col>
                 </Row>
             </Form>
-            <Table style={{ marginTop: '10px' }} columns={columns} dataSource={users} scroll={{ y: 'calc(100vh - 440px)' }} rowKey="_id" bordered></Table>
+            <Table style={{ marginTop: '10px' }} columns={columns} dataSource={users} rowSelection={rowSelection} scroll={{ y: 'calc(100vh - 440px)' }} rowKey="_id" bordered></Table>
+            {/* <Button type="primary" onClick={onDeleteMultiRows}>删除选中</Button> */}
             <Modal title={currentType === 1 ? '新增用户' : '编辑用户'} visible={visible} cancelText="取消" okText="确定" onOk={onSave} onCancel={() => setVisible(false)}>
                 <Form
                     labelCol={{ span: 4 }}

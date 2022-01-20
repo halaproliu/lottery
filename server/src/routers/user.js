@@ -43,7 +43,7 @@ class User {
     })
     async getUserByParams (ctx) {
         let params = ctx.request.body
-        let res = await UserModel.find(params)
+        let res = await UserModel.find(params).exec()
         let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }
@@ -55,7 +55,7 @@ class User {
     async saveUser (ctx) {
         let params = ctx.request.body
         let code = params.code
-        let data = await UserModel.findOne({ code })
+        let data = await UserModel.findOne({ code }).exec()
         if (!data) {
             data = await UserModel.create(params)
         }

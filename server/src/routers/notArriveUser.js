@@ -22,7 +22,7 @@ class Winner {
     })
     async getNotArriveUsersByParams (ctx) {
         let params = ctx.request.body
-        let res = await WinsNotArriveModel.find(params).exec()
+        let res = await WinsNotArriveModel.find(params).sort({ type: 1, title: 1 }).exec()
         let data = Object.prototype.toString.call(res) === '[object Object]' ? [res] : res
         ctx.body = genSuccessResponse(data)
     }
@@ -34,7 +34,7 @@ class Winner {
     async saveNotArriveUser (ctx) {
         let params = ctx.request.body
         let code = params.code
-        let data = await WinsNotArriveModel.findOne({ code })
+        let data = await WinsNotArriveModel.findOne({ code }).sort({ type: 1, title: 1 }).exec()
         if (!data) {
             data = await WinsNotArriveModel.create(params)
         }
