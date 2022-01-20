@@ -10,7 +10,6 @@ function Prize () {
   const selectedIndex = useSelector(state => state.lotterys.selectedIndex)
   const preSelected = useSelector(state => state.lotterys.preSelected)
   const preSelectedIndex = useSelector(state => state.lotterys.preSelectedIndex)
-  const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
   let [ currCount, setCurrCount ] = useState(0)
   const getCurrentWinners = (obj) => {
     return winnerUsers.filter(user => user.type === obj.type && user.title === obj.title) || []

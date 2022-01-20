@@ -1,4 +1,4 @@
-import Lottery from '@/pages/Lotterys'
+import Lottery from '@/pages/Lottery'
 import Users from '@/pages/Users'
 import Winners from '@/pages/Winners'
 import NotArriveUsers from '@/pages/NotArriveUsers'

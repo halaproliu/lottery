@@ -11,7 +11,7 @@ const { Option } = Select
 const PrizeList = () => {
     const [ prizeList, setPrizeList ] = useState([])
     const [ visible, setVisible ] = useState(false)
-    const [ currentItem, setCurrentItem ] = useState({ title: '', img: '', type: '' })
+    const [ currentItem, setCurrentItem ] = useState({ title: '', img: '', type: '', count: '' })
     const [ currentType, setCurrentType ] = useState(null)
     const [ state, setState ] = useState({
         title: '',
@@ -221,6 +221,9 @@ const PrizeList = () => {
                     </Form.Item>
                     <Form.Item label="奖品图片">
                         <Input placeholder="请输入" value={currentItem.img} onChange={(e) => onChange(e, 'img')}></Input>
+                    </Form.Item>
+                    <Form.Item label="抽取总数">
+                        <Input placeholder="请输入" value={currentItem.count} onChange={(e) => onChange(e, 'count')}></Input>
                     </Form.Item>
                     <Form.Item label="抽取个数">
                         <Input placeholder="请输入" value={currentItem.eachCount} onChange={(e) => onChange(e, 'eachCount')}></Input>

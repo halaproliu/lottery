@@ -9,7 +9,6 @@ let PrizeSchema = new Schema({
   title: String,
   img: String,
   type: Number,
-  subType: Number,
   count: Number,
   eachCount: Number,
   createAt: {

@@ -41,6 +41,7 @@ const User = () => {
         title: '奖品名称',
         dataIndex: 'title',
         key: 'title',
+        width: 120,
         render: text => <span style={{ color: '#409eff' }}>{text}</span>
     }, {
         title: '奖品等级',
@@ -64,6 +65,7 @@ const User = () => {
         title: '操作',
         dataIndex: '',
         key: '',
+        fixed: 'right',
         width: 180,
         render: item => {
             return (

@@ -27,9 +27,6 @@ const MyMenu = () => {
             <Menu.Item key="/notArriveUsers" icon={<UserDeleteOutlined />}>
                 <Link to="/notArriveUsers">中奖未到场用户列表</Link>
             </Menu.Item>
-            <Menu.Item key="/setting" icon={<SettingOutlined />}>
-                <Link to="/setting">设置</Link>
-            </Menu.Item>
         </Menu>
     )
 }

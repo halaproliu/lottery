@@ -4,7 +4,7 @@ import '@/assets/css/animate.min.css'
 import Music from '@/components/Music'
 import Prize from '@/components/Prize'
 import Star from '@/components/Star'
-import Main from '@/components/Mains'
+import Main from '@/components/Main'
 import * as PrizeApi from '@/api/prize'
 import * as LotteryApi from '@/api/lottery'
 import { initData, setSelected } from '@/reducers/actions'
@@ -13,8 +13,6 @@ import { useSelector, useDispatch } from 'react-redux'
 const Lottery = () => {
     const prizes = useSelector(state => state.lotterys.prizes)
     const winnerUsers = useSelector(state => state.lotterys.winnerUsers)
-    const preSelectedUsers = useSelector(state => state.lotterys.preSelectedUsers)
-    const preSelectedIndex = useSelector(state => state.lotterys.preSelectedIndex)
     const isLoaded = useSelector(state => state.lotterys.isLoaded)
     const dispatch = useDispatch()
     const onInit = useCallback(data => dispatch(initData(data)), [dispatch])
@@ -34,9 +32,6 @@ const Lottery = () => {
             let currSelected = prizes[i]
             let currWinners = getCurrentWinners(currSelected)
             let count = currWinners.length
-            // if (preSelectedIndex === i) {
-            //     count += preSelectedUsers.length
-            // }
              if (count >= currSelected.count) {
                 if (i === 0) {
                     dispatch(setSelected({ index: i, value: currSelected }))
@@ -58,7 +53,7 @@ const Lottery = () => {
         if (isLoaded && prizes.length) {
             getCurrentPrize()
         }
-    }, [isLoaded, winnerUsers, prizes])
+    }, [isLoaded, JSON.stringify(winnerUsers), JSON.stringify(prizes)])
 
     return (
         <div className="lottery-box">

@@ -87,7 +87,7 @@ const Main = () => {
     useEffect(() => {
         const fns = { setShowLottery, showBubble, dispatch }
         lotteryInstance.current = new Lottery(fns)
-    }, [])
+    }, [dispatch])
 
     return (
         <>
