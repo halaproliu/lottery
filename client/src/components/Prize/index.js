@@ -34,9 +34,6 @@ function Prize () {
             let key = prize._id
             let hasLotteryCount = getCurrentWinners(prize).length
             let leftCount = prize.count - hasLotteryCount
-            // if (index === preSelectedIndex) {
-            //   leftCount -= preSelectedUsers.length
-            // }
             let isShow = prize.type === preSelected.type
             let barWidth = `${(leftCount / prize.count) * 100}%`
             return (

@@ -47,13 +47,7 @@ class Winner {
     })
     async saveMultiWinnerUser (ctx) {
         let params = ctx.request.body
-        let { users, type, title } = params
-        users = users.map(user => {
-            user.type = type
-            user.title = title
-            delete user._id
-            return user
-        })
+        let { users } = params
         let data = await WinnerModel.create(users)
         ctx.body = genSuccessResponse(data)
     }

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 delete mongoose.connection.models['Prize']
 
 let PrizeSchema = new Schema({
-  id: String,
+  id: Number,
   title: String,
   img: String,
   type: Number,

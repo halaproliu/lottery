@@ -379,32 +379,26 @@ class Lottery {
     }
 
     // 获取每次抽奖个数
-    getEachCount () {
-        let eachCount = this.selected.eachCount
-        let currPrizeTotalCount = this.selected.count
-        let currPrizeCount = currPrizeTotalCount - this.getCurrentWinners(this.selected).length
+    getEachCount (selected) {
+        let eachCount = selected.eachCount
+        let currPrizeTotalCount = selected.count
+        let currPrizeCount = currPrizeTotalCount - this.getCurrentWinners(selected).length
         currPrizeCount = currPrizeCount > eachCount ? eachCount : currPrizeCount
         return currPrizeCount
     }
 
     async saveData () {
         if (this.selectedUsers.length === 0) return
-        const { type, title } = this.preSelected
         let opts = {
-            users: this.selectedUsers,
-            type,
-            title
+            users: this.selectedUsers
         }
         await WinnerUserApi.saveMultiWinnerUser(opts)
     }
 
     async saveNotArriveUser () {
         if (this.selectedUsers.length === 0) return
-        const { type, title } = this.preSelected
         await NotArriveUserApi.saveMultiNotArriveUser({
-            users: this.selectedUsers,
-            type,
-            title
+            users: this.selectedUsers
         })
     }
 
@@ -412,19 +406,28 @@ class Lottery {
         await this.rotateBall()
         this.selectedCardIndex = []
         this.selectedUsers = []
-        let currPrizeCount = this.getEachCount()
+        let selected
+        if (relottery) {
+            selected = this.preSelected
+            let len = this.winnerUsers.length
+            let arr = this.preSelectedUsers.map(item => item.code)
+            for (let i = len - 1; i >= 0; i--) {
+                if (arr.includes(this.winnerUsers[i].code)) {
+                    this.winnerUsers.splice(i, 1)
+                }
+            }
+            this.dispatch(setWinnerUsers(this.winnerUsers))
+        } else {
+            selected = this.selected
+        }
+        let currPrizeCount = this.getEachCount(selected)
         let leftCount = this.remainUsers.length // 剩余抽奖个数
         for (let i = 0; i < currPrizeCount; i++) {
             let selectedId = this.random(leftCount)
             let selectUser = this.remainUsers.splice(selectedId, 1)[0]
             selectUser.status = 1
-            if (relottery) {
-                selectUser.type = this.preSelected.type
-                selectUser.title = this.preSelected.title
-            } else {
-                selectUser.type = this.selected.type
-                selectUser.title = this.selected.title
-            }
+            selectUser.type = selected.type
+            selectUser.title = selected.title
             this.selectedUsers.push(selectUser)
             this.dispatch(setRemainUsers(this.remainUsers))
             leftCount--
@@ -434,17 +437,7 @@ class Lottery {
             }
             this.selectedCardIndex.push(cardIndex)
         }
-        this.dispatch(setPreSelectedUsers(this.selectedUsers))
-        if (relottery) {
-            let len = this.winnerUsers.length
-            let arr = this.preSelectedUsers.map(item => item.code)
-            for (let i = len - 1; i >= 0; i--) {
-                if (arr.includes(this.winnerUsers[i].code)) {
-                    this.winnerUsers.splice(i, 1)
-                }
-            }
-            this.dispatch(setWinnerUsers(this.winnerUsers))
-        }
+        this.dispatch(setPreSelectedUsers(this.selectedUsers)) 
         this.winnerUsers.push.apply(this.winnerUsers, this.selectedUsers)
         this.dispatch(setWinnerUsers(this.winnerUsers))
         this.selectCard()
@@ -524,6 +517,9 @@ class Lottery {
         this.dispatch(setPreSelectedUsers([]))
         this.winnerUsers = []
         this.dispatch(setWinnerUsers(this.winnerUsers))
+        // let i = this.prizes.length - 1
+        // let value = this.prizes[i]
+        // this.dispatch(setPreSelected({i, value}))
         this.dispatch(setPreSelected({i: this.selectedIndex, value: this.selected}))
         this.switchScreen('enter')
     }

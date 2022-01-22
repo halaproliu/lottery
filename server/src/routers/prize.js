@@ -11,7 +11,7 @@ class Prize {
         method: RequestMethod.GET
     })
     async getAllPrizes (ctx) {
-        let data = await PrizeModel.find({}).sort({ type: 1, subType: 1 }).exec()
+        let data = await PrizeModel.find({}).sort({ id: 1 }).exec()
         ctx.body = genSuccessResponse(data)
     }
 

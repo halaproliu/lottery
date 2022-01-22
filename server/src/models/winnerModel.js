@@ -5,7 +5,6 @@ const Schema = mongoose.Schema
 delete mongoose.connection.models['Winner']
 
 let WinnerSchema = new Schema({
-  id: String,
   code: Number,
   username: String,
   nickName: String,

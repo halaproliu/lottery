@@ -5,7 +5,6 @@ const Schema = mongoose.Schema
 delete mongoose.connection.models['WinNotArrive']
 
 let WinNotArriveSchema = new Schema({
-  id: String,
   code: Number,
   username: String,
   nickName: String,

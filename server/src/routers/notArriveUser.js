@@ -48,12 +48,7 @@ class Winner {
     async saveMultiNotArriveUser (ctx) {
         try {
             let params = ctx.request.body
-            let { users, type, title } = params
-            users = users.map(user => {
-                user.type = type
-                user.title = title
-                return user
-            })
+            let { users } = params
             let data = await WinsNotArriveModel.create(users)
             ctx.body = genSuccessResponse(data)
         } catch (e) {
